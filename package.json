@@ -1,0 +1,33 @@
+{
+  "name": "sms-api",
+  "version": "1.0.0",
+  "description": "API do trabalho de conclusão de curso, Sistema de monitoramento do solo",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/application/server.js",
+    "postinstall": "prisma generate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NeemiasVieira/sms-api.git"
+  },
+  "author": "Neemias Vieira",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NeemiasVieira/sms-api/issues"
+  },
+  "homepage": "https://github.com/NeemiasVieira/sms-api#readme",
+  "dependencies": {
+    "@prisma/client": "^5.1.1",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "prisma": "^5.1.1"
+  },
+  "prisma": {
+    "schema": "src/database/prisma/schema.prisma"
+  }
+}
