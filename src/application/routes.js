@@ -13,12 +13,7 @@ routes.get("/", async(request, response) => {
     senha,
     dataDeCriacao
   }})
-
-  // await prisma.users.create({data:{
-  //   email: "exemplo@gmail.com",
-  //   senha: "123456",
-  //   dataDeCriacao: new Date(),
-  // }})
+  
   await prisma.$disconnect();
   response.send("Usuário criado com sucesso");
 })
