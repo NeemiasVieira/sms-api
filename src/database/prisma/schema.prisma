@@ -13,6 +13,28 @@ datasource db {
 model users {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   email         String   @unique(map: "findEmail")
+  nome          String    
   senha         String
   dataDeCriacao DateTime
 }
+
+model plantas {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId 
+  especie     String
+  dataDaPlantacao DateTime
+}
+
+// schema.prisma
+
+model registros {
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  idPlanta        String
+  nitrogenio      String
+  fosforo         String
+  potassio        String
+  umidade         String
+  temperatura     String
+  pH              String
+  dataDeRegistro  DateTime
+}
+
