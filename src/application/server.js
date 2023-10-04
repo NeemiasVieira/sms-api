@@ -2,6 +2,9 @@ import express from "express";
 import routes from "./routes.js";
 import { ErrosComuns } from "../middlewares/erros.js";
 import cors from "cors";
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from "./swaggerconfig.js"
+
 
 // https://sms-api-git-main-neemiasvieira.vercel.app/ 
 
@@ -18,6 +21,7 @@ app.use(cors({
 
 }));
 app.use(routes);
+app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
 app.use(ErrosComuns);
 
 app.listen(process.env.PORT || 3333,"0.0.0.0", () => {

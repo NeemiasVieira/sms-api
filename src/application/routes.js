@@ -9,6 +9,18 @@ import { findAllByPlantIdController } from "../modules/records/use-cases/FindAll
 
 const routes = Router();
 
+/**
+ * @swagger
+ * /api/exemplo:
+ *   get:
+ *     summary: Retrieve a list of JSONPlaceholder users
+ *     description: Retrieve a list of users from JSONPlaceholder. Can be used to populate a list of fake users when prototyping or testing an API.
+*/
+
+routes.get('/api/exemplo', (req, res) => {
+  res.status(200).json({ mensagem: 'Rota de exemplo' });
+});
+
 routes.post("/usuarios", errosAssincronos(async(request, response) => {
   await createUserController(request, response);
 }));
