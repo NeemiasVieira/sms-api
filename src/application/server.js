@@ -1,10 +1,12 @@
 import express from "express";
 import routes from "./routes.js";
-import { ErrosComuns } from "../middlewares/erros.js";
 import cors from "cors";
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from "./swaggerconfig.js"
-
+import { logs } from "../middlewares/logs.js";
+import { ErrosComuns } from "../middlewares/erros.js";
+import cron from 'node-cron';
+import prisma from "../database/prisma/prismaClient.js";
 
 // https://sms-api-git-main-neemiasvieira.vercel.app/ 
 
@@ -20,6 +22,15 @@ app.use(cors({
   exposedHeaders: "*",
 
 }));
+
+cron.schedule('00 00 * * *', async() => {
+  console.log("Exclusão dos logs pela varredura da meia noite concluido com sucesso 😎");
+  await prisma.logs.deleteMany();
+}, {
+  timezone: "America/Sao_Paulo"
+});
+
+app.use(logs);
 app.use(routes);
 app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
 app.use(ErrosComuns);

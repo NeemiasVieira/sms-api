@@ -19,9 +19,18 @@ model users {
 }
 
 model plantas {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId 
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  idDono      String
   especie     String
   dataDaPlantacao DateTime
+}
+
+model logs {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  request     String
+  response    String
+  time        String
+  data        Json
 }
 
 // schema.prisma
