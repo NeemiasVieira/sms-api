@@ -1,3 +1,4 @@
+import { MyDate } from "../../../../assets/DateSaoPaulo.js";
 import prisma from "../../../../database/prisma/prismaClient.js"
 import { ErroApp } from "../../../../middlewares/erros.js";
 
@@ -11,7 +12,7 @@ export const createPlantService = async(idDono, especie) => {
     const dono = await prisma.users.findUnique({where:{id: idDono}});
     if(!dono) throw new ErroApp(400, "Usuário (Dono) não existe");
 
-    const dataDaPlantacao = new Date();
+    const dataDaPlantacao = new MyDate();
 
     const newPlant = await prisma.plantas.create({data:{
         idDono,

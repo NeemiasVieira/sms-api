@@ -23,7 +23,7 @@ app.use(cors({
 
 }));
 
-cron.schedule('00 00 * * *', async() => {
+cron.schedule('0 0 * * *', async() => {
   console.log("Exclusão dos logs pela varredura da meia noite concluido com sucesso 😎");
   await prisma.logs.deleteMany();
 }, {
@@ -33,7 +33,7 @@ cron.schedule('00 00 * * *', async() => {
 app.use(logs);
 app.use(routes);
 app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
-// app.use(ErrosComuns);
+app.use(ErrosComuns);
 
 app.listen(process.env.PORT || 3333,"0.0.0.0", () => {
   console.log("▶️  Servidor iniciado com sucesso em http://localhost:3333 🆙");

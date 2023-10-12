@@ -1,5 +1,6 @@
 import { ErroApp } from "../../../../middlewares/erros.js"
 import prisma from "../../../../database/prisma/prismaClient.js"
+import { MyDate } from "../../../../assets/DateSaoPaulo.js";
 
 
 export const createRecordService = async(idPlanta, nitrogenio, fosforo, potassio, umidade, temperatura, pH) => {
@@ -9,7 +10,8 @@ export const createRecordService = async(idPlanta, nitrogenio, fosforo, potassio
 
     await prisma.$connect();
 
-    const dataDeRegistro = new Date();
+    const dataDeRegistro = new MyDate();
+    
 
     const novoRegistro = prisma.registros.create({data:{
         idPlanta,
@@ -27,3 +29,4 @@ export const createRecordService = async(idPlanta, nitrogenio, fosforo, potassio
     return novoRegistro;
 
 }
+

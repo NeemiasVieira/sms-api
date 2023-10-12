@@ -1,7 +1,8 @@
+import { MyDate } from "../assets/DateSaoPaulo.js";
 import prisma from "../database/prisma/prismaClient.js";
 
 export const logs = async(request, response, next) => {
-    const currentTime = new Date();
+    const currentTime = new MyDate();
     const formattedTime = `${currentTime.getDate()}/${currentTime.getMonth() + 1}/${currentTime.getFullYear()} - ${currentTime.getHours()}:${currentTime.getMinutes()}:${currentTime.getSeconds()}`;
     
     // Defina a variável responseTime no escopo principal do middleware
@@ -13,7 +14,7 @@ export const logs = async(request, response, next) => {
     const originalSend = response.send;
     response.send = async function (data) {
       // Registra a mensagem de sucesso e responseTime
-      responseTime = new Date() - currentTime; // Atualize responseTime aqui
+      responseTime = new MyDate();
       const res = `Resposta ${response.statusCode} em ${responseTime}ms`;
       const time = formattedTime;
       const dat = JSON.parse(data)

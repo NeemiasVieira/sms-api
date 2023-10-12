@@ -6,6 +6,7 @@ import { createPlantController } from "../modules/plants/use-cases/createPlant/c
 import { createRecordController } from "../modules/records/use-cases/CreateRecord/CreateRecordController.js";
 import { findAllByPlantIdController } from "../modules/records/use-cases/FindAllByPlantId/findAllByPlantIdController.js";
 import { getSaudeByIdController } from "../modules/plants/use-cases/getSaudeById/getSaudeByIdController.js";
+import { getPlantasByDonoController } from "../modules/plants/use-cases/getPlantasByDonoID/getPlantasByDonoController.js";
 
 
 const routes = Router();
@@ -45,5 +46,9 @@ routes.get("/registros/:idPlanta", errosAssincronos(async(request, response) => 
 routes.get("/saude/:id", errosAssincronos(async (request, response) => {
   return await getSaudeByIdController(request, response);
 }))
+
+routes.get("/plantas/buscar/:id", errosAssincronos(async (request, response) => {
+  return await getPlantasByDonoController(request, response);
+}));
 
 export default routes;

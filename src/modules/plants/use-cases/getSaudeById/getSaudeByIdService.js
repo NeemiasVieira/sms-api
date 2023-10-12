@@ -4,8 +4,6 @@ import { geraRelatorioDeSaude } from "./geraRelatorioDeSaude.js";
 
 export const getSaudeByIdService = async(id) => {
 
-    const {nitrogenio, fosforo, potassio, umidade, temperatura, pH} = "";
-
     await prisma.$connect();
 
     const planta = await prisma.plantas.findUnique({where:{id}});

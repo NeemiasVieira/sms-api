@@ -1,3 +1,4 @@
+import { MyDate } from "../../../../assets/DateSaoPaulo.js";
 import prisma from "../../../../database/prisma/prismaClient.js"
 import { ErroApp } from "../../../../middlewares/erros.js";
 import { hash } from "bcrypt";
@@ -50,7 +51,7 @@ export const createUserService = async(nome, email, senha) => {
 
     let senhaCriptografada = await criptografar(senha);
 
-    const dataDeCriacao = new Date();
+    const dataDeCriacao = new MyDate();
 
     const newUser = await prisma.users.create({data:{nome, email, senha: senhaCriptografada, dataDeCriacao}})
 

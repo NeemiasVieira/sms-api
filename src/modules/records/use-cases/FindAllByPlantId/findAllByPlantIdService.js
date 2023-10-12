@@ -1,7 +1,7 @@
 import prisma from "../../../../database/prisma/prismaClient.js"
 import { ErroApp } from "../../../../middlewares/erros.js";
 
-function isObjectId(string) {
+export const isObjectId = (string) => {
     // Verifica se a string tem exatamente 24 caracteres hexadecimais
     const objectIdRegex = /^[0-9a-fA-F]{24}$/;
     return objectIdRegex.test(string);
