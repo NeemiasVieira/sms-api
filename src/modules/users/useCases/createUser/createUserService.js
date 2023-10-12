@@ -34,7 +34,7 @@ export const createUserService = async(nome, email, senha) => {
         throw new ErroApp(400, "Todos os campos são obrigatórios!");
     }
 
-    const usuarioExiste = await prisma.users.findUnique({where: {email}});
+    const usuarioExiste = await prisma.users.findUnique({where: {email}});     
 
     if(usuarioExiste){
         throw new ErroApp(400, "Usuário já existe");

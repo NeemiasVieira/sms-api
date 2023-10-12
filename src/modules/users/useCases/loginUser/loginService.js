@@ -37,7 +37,8 @@ const loginService = async (email, senha) => {
     expiresIn: "1d",
   });
 
-  //Caso de sucesso do login
+  //Caso de sucesso do login           
+  
   return {resposta: `Usuário ${usuarioExiste.nome.split(" ")[0]} logado com sucesso!`, usuario: usuarioExiste, token};
 };
 

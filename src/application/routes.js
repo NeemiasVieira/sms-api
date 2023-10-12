@@ -5,6 +5,7 @@ import loginController from "../modules/users/useCases/loginUser/loginController
 import { createPlantController } from "../modules/plants/use-cases/createPlant/createPlantController.js";
 import { createRecordController } from "../modules/records/use-cases/CreateRecord/CreateRecordController.js";
 import { findAllByPlantIdController } from "../modules/records/use-cases/FindAllByPlantId/findAllByPlantIdController.js";
+import { getSaudeByIdController } from "../modules/plants/use-cases/getSaudeById/getSaudeByIdController.js";
 
 
 const routes = Router();
@@ -40,5 +41,9 @@ routes.post("/registros", errosAssincronos(async(request, response) => {
 routes.get("/registros/:idPlanta", errosAssincronos(async(request, response) => {
   await findAllByPlantIdController(request, response);
 }));
+
+routes.get("/saude/:id", errosAssincronos(async (request, response) => {
+  return await getSaudeByIdController(request, response);
+}))
 
 export default routes;
