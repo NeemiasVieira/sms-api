@@ -2,7 +2,7 @@ import { MyDate } from "../../../../assets/DateSaoPaulo.js";
 import prisma from "../../../../database/prisma/prismaClient.js"
 import { ErroApp } from "../../../../middlewares/erros.js";
 
-export const createPlantService = async(idDono, especie) => {
+export const createPlantService = async(idDono, nome, especie) => {
     await prisma.$connect();
 
     if(!especie) throw new ErroApp(400, "O campo espécie da planta é obrigatório!");
@@ -16,6 +16,7 @@ export const createPlantService = async(idDono, especie) => {
 
     const newPlant = await prisma.plantas.create({data:{
         idDono,
+        nome,
         especie,
         dataDaPlantacao
     }})

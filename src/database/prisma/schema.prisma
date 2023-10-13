@@ -21,6 +21,7 @@ model users {
 model plantas {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
   idDono      String
+  nome        String
   especie     String
   dataDaPlantacao DateTime
 }
