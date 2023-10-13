@@ -62,18 +62,22 @@ export const geraRelatorioDeSaude = (ultimoRegistro) => {
     let nitrogenio = avaliarSaude(Number(ultimoRegistro.nitrogenio), 50, 200, "nitrogênio");
     let fosforo = avaliarSaude(Number(ultimoRegistro.fosforo), 30, 75, "fósforo");
     let potassio = avaliarSaude(Number(ultimoRegistro.potassio), 200, 300, "potássio");
-    let temperatura = avaliarSaude(Number(ultimoRegistro.temperatura), -40, 80, "temperatura");
-    let umidade = avaliarSaude(Number(ultimoRegistro.umidade), 0, 100, "umidade");
-    let pH = avaliarSaude(Number(ultimoRegistro.pH), 3, 9, "pH");
+    let temperatura = avaliarSaude(Number(ultimoRegistro.temperatura), 10, 35, "temperatura");
+    let umidade = avaliarSaude(Number(ultimoRegistro.umidade), 50, 70, "umidade");
+    let pH = avaliarSaude(Number(ultimoRegistro.pH), 6, 7, "pH");
 
     let estadoGeral = "Ruim";
-    if (pontuacao >= 6 && pontuacao <= 8) {
-        estadoGeral = "Regular";
-    } else if (pontuacao >= 9 && pontuacao <= 11) {
-        estadoGeral = "Bom";
-    } else if (pontuacao >= 12) {
+    switch (pontuacao){
+        case 0: 
         estadoGeral = "Excelente!";
-    }
+        break;
+        case 1: 
+        estadoGeral = "Bom";
+        break;
+        case 2: 
+        estadoGeral = "Regular";
+        break;            
+    } 
 
     const ultimaAtualizacao = ultimoRegistro.dataDeRegistro;
 
