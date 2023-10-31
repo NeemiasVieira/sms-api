@@ -1,9 +1,9 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "Sistema de Monitoramento do Solo",
-    "description": "teste",
-    "version": "1.0.0"
+    "title": "SMS API - Documentação",
+    "description": "O projeto Sistema de Monitoramento do Solo tem foco no desenvolvimento e cuidados com o crescimento de plantas.<br><br>Nosso objetivo é trazer praticidade para o plantio domiciliar, através da implementação tecnólogica que auxiliará em todos os cuidados da sua plantinha.<br><br>O sistema contará com controle em tempo real de onde estiver, monitorando a planta por imagens, que conseguirão detectar a presença de doenças e/ou anomalias, e também contará com o controle de nutrientes e estatísticas como: Nitrogênio, Fósforo, Potássio (NPK), umidade, temperatura e pH.",
+    "version": "1.0.2"
   },
   "basePath": "/",
   "tags": [
@@ -14,6 +14,14 @@
     {
       "name": "Plantas",
       "description": "Operações relacionadas as plantas"
+    },
+    {
+      "name": "Registros",
+      "description": "Operações relacionadas aos registros"
+    },
+    {
+      "name": "Logs",
+      "description": "Operações relacionadas aos logs"
     }
   ],
   "paths": {
@@ -142,7 +150,7 @@
         "tags": ["Plantas"]
       }
     },
-    "/plantas/{id}": {
+    "/plantas/{idPlanta}": {
       "delete": {
         "summary": "Exclusão de planta",
         "parameters": [
@@ -188,7 +196,7 @@
         "tags": ["Plantas"]
       }
     },
-    "/plantas/buscar/{id}": {
+    "/plantas/buscar/{idDono}": {
       "get": {
         "summary": "Buscar plantas pelo ID do Dono",
         "parameters": [
@@ -249,7 +257,7 @@
         "tags": ["Plantas"]
       }
     },
-    "/plantas/saude/{id}": {
+    "/plantas/saude/{idPlanta}": {
       "get": {
         "summary": "Gerar Relatório de Saúde baseado no último registro da planta",
         "parameters": [
@@ -311,7 +319,7 @@
         "tags": ["Plantas"]
       }
     },
-    "/plantas/registro/{id}": {
+    "/plantas/registro/{idPlanta}": {
       "get": {
         "summary": "Recupera o último registro pelo ID da planta",
         "parameters": [
@@ -357,7 +365,7 @@
         "tags": ["Plantas"]
       }
     },
-    "/plantas/{id}": {
+    "/plantas/{idPlant}": {
       "patch": {
         "summary": "Atualiza planta pelo ID",
         "parameters": [
@@ -374,8 +382,8 @@
           "content": {
             "application/json": {
               "example": {
-                "nome": "The Plant",
-                "especie": "Suculenta"
+                "nome": "Planta Legal",
+                "especie": "Manjericão"
               }
             }
           }
@@ -386,10 +394,12 @@
             "content": {
               "application/json": {
                 "example": {
-                    "idDono": "6529434d37fa0731e81f454c",
-                    "nome": "The Plant",
-                    "especie": "Suculenta"
-                  }
+                  "id": "652955aa670b516ea2a104d0",
+                  "idDono": "6529434d37fa0731e81f454c",
+                  "nome": "Planta Legal",
+                  "especie": "Manjericão",
+                  "dataDaPlantacao": "2023-10-13T11:35:22.898Z"
+                }
               }
             }
           },
@@ -418,6 +428,297 @@
           }
         },
         "tags": ["Plantas"]
+      }
+    },
+    "/registros": {
+      "post": {
+        "summary": "Registro do sensor",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "idPlanta": "652ad43ba9cb5d701532054c",
+                "nitrogenio": "100",
+                "fosforo": "50.5",
+                "potassio": "241.5",
+                "umidade": "63.7",
+                "temperatura": "25.4",
+                "pH": "6.7"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Registro criado com sucesso",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "654130d97135d66a3f1b53c0",
+                  "idPlanta": "652ad43ba9cb5d7015350c8b",
+                  "nitrogenio": "100",
+                  "fosforo": "50.5",
+                  "potassio": "241.5",
+                  "umidade": "63.7",
+                  "temperatura": "25.4",
+                  "pH": "6.7",
+                  "dataDeRegistro": "2023-10-31T16:52:41.579Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mensagem": "Todos os campos são obrigatórios, são eles: idPlanta, nitrogenio, fosforo, potassio, umidade, temperatura, pH"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Registros"]
+      }
+    },
+    "/registros/{idRegistro}": {
+      "delete": {
+        "summary": "Exclusão de registro",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Exclusão realizada com sucesso",
+            "content": {
+              "application/json": {
+                "example": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mensagem": "ID inválido"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mensagem": "Registro não existe"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Registros"]
+      }
+    },
+    "/registros/{idPlanta}": {
+      "get": {
+        "summary": "Consulta de registros",
+        "parameters": [
+          {
+            "name": "idPlanta",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "intervaloDeDias",
+            "in": "query",
+            "description": "Número de dias entre um registro e outro, por exemplo, ao inserir o número 5, a cada 5 dias irá retornar apenas um registro independentemente do número de registros nesse intervalo.",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "intervaloDeBusca",
+            "in": "query",
+            "description": "Número de dias para busca, exemplo: para buscar nas últimas duas semanas: 14.",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Consulta de registros realizada com sucesso",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": "653bb0099b0fcdd8cbe85d67",
+                    "idPlanta": "652ad43ba9cb5d7015350c8b",
+                    "nitrogenio": "100",
+                    "fosforo": "75",
+                    "potassio": "220",
+                    "umidade": "60",
+                    "temperatura": "15",
+                    "pH": "7",
+                    "dataDeRegistro": "2023-10-27T12:41:45.808Z"
+                  },
+                  {
+                    "id": "653bb0343874a4bb39349987",
+                    "idPlanta": "652ad43ba9cb5d7015350c8b",
+                    "nitrogenio": "180",
+                    "fosforo": "150",
+                    "potassio": "50",
+                    "umidade": "60",
+                    "temperatura": "15",
+                    "pH": "7",
+                    "dataDeRegistro": "2023-10-27T12:42:27.936Z"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mensagem": "ID da planta é inválido"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mensagem": "A planta não existe no banco de dados"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Registros"]
+      }
+    },
+    "/registros/{IDRegistro}": {
+      "patch": {
+        "summary": "Atualização de registro",
+        "parameters": [
+          {
+            "name": "idRegistro",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "idPlanta": "652ad43ba9cb5d7015350c8b",
+                "nitrogenio": "100",
+                "fosforo": "75",
+                "potassio": "220",
+                "umidade": "60",
+                "temperatura": "15",
+                "pH": "7",
+                "dataDeRegistro": "2023-10-27T12:41:45.808Z"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Registro atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "653bb0099b0fcdd8cbe85d67",
+                  "idPlanta": "652ad43ba9cb5d7015350c8b",
+                  "nitrogenio": "100",
+                  "fosforo": "75",
+                  "potassio": "220",
+                  "umidade": "60",
+                  "temperatura": "15",
+                  "pH": "7",
+                  "dataDeRegistro": "2023-10-27T12:41:45.808Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mensagem": "ID inválido!"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mensagem": "Registro não encontrado"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Registros"]
+      }
+    },
+    "/logs": {
+      "get": {
+        "summary": "Consulta dos logs",
+        "responses": {
+          "200": {
+            "description": "Consulta realizada com sucesso",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": "6541398c00867511294adab3",
+                    "request": "Requisição POST em /usuarios/login",
+                    "response": "Resposta 401 em 68ms",
+                    "time": "31/10/2023 - 17:29:48",
+                    "data": {
+                      "mensagem": "Usuário ou senha incorretos! Tente novamente."
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "tags": ["Logs"]
+      },
+      "delete": {
+        "summary": "Exclusão de todos os logs",
+        "responses": {
+          "204": {
+            "description": "Exclusão realizada com sucesso"
+          }
+        },
+        "tags": ["Logs"]
       }
     }
   }
