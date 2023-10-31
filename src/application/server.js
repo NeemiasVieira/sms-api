@@ -52,7 +52,7 @@ app.use(logs);
 app.use(routes);
 
 
-app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerSpec, SwaggerOptions));
+app.use("/api", swaggerUi.serve, swaggerUi.setup(swaggerSpec, SwaggerOptions));
 app.use(ErrosComuns);
 
 app.listen(process.env.PORT || 3333, "0.0.0.0", () => {
