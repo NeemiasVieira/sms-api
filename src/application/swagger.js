@@ -1,4 +1,4 @@
-{
+export const swaggerSpec = {
   "openapi": "3.0.1",
   "info": {
     "title": "SMS API - Documentação",
