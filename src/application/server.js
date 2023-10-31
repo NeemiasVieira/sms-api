@@ -1,22 +1,11 @@
 import express from "express";
 import routes from "./routes.js";
 import cors from "cors";
-import swaggerUi from "swagger-ui-express";
-import swaggerSpec from "../../swagger.json" assert { type: "json" };
 import { logs } from "../middlewares/logs.js";
 import { ErrosComuns } from "../middlewares/erros.js";
 import cron from "node-cron";
 import prisma from "../database/prisma/prismaClient.js";
 
-const SwaggerOptions = {
-  customSiteTitle: "SMS-API",
-  // customfavIcon: "../assets/img/favicon",
-
-  //Temas do Swagger: https://cdn.jsdelivr.net/npm/swagger-ui-themes@3.0.0/themes/3.x/
-  customCssUrl:
-    "https://cdn.jsdelivr.net/npm/swagger-ui-themes@3.0.0/themes/3.x/theme-outline.css",
-  customCss: ".swagger-ui .topbar { background-color: rgb(16, 187, 64) } !important"
-};
 
 // https://sms-api-git-main-neemiasvieira.vercel.app/
 
@@ -51,7 +40,7 @@ app.use(logs);
 app.use(routes);
 
 
-app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerSpec, SwaggerOptions));
+//app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerSpec, SwaggerOptions));
 app.use(ErrosComuns);
 
 app.listen(process.env.PORT || 3333, "0.0.0.0", () => {
