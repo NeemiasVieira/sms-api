@@ -1,5 +1,4 @@
 
-import swaggerSpec from "../../swagger.json" assert { type: "json" };;
 import express from "express";
 import routes from "./routes.js";
 import cors from "cors";
@@ -52,7 +51,7 @@ app.use(logs);
 app.use(routes);
 
 
-app.use("/api", swaggerUi.serve, swaggerUi.setup(swaggerSpec, SwaggerOptions));
+app.use("/api", swaggerUi.serve, swaggerUi.setup());
 app.use(ErrosComuns);
 
 app.listen(process.env.PORT || 3333, "0.0.0.0", () => {
