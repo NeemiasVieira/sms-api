@@ -2,7 +2,7 @@ import express from "express";
 import routes from "./routes.js";
 import cors from "cors";
 import swaggerUi from 'swagger-ui-express';
-import swaggerSpec from "./swaggerconfig.js"
+import swaggerSpec from "../swagger.json" assert { type: "json" };
 import { logs } from "../middlewares/logs.js";
 import { ErrosComuns } from "../middlewares/erros.js";
 import cron from 'node-cron';

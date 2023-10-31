@@ -1,0 +1,424 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Sistema de Monitoramento do Solo",
+    "description": "teste",
+    "version": "1.0.0"
+  },
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Usuários",
+      "description": "Operações relacionadas a usuários"
+    },
+    {
+      "name": "Plantas",
+      "description": "Operações relacionadas as plantas"
+    }
+  ],
+  "paths": {
+    "/usuarios": {
+      "post": {
+        "summary": "Cadastro de usuário",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "nome": "Fulano da Silva",
+                "email": "fulano@outlook.com",
+                "senha": "$2b$08$d/SyueNT/ptWVq26x4XMLOR.NqpVDKxAwB9nD6RK5CTAjFUIIiQfq"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário criado com sucesso",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "654105d656c8f227b012d184",
+                  "email": "fulano@outlook.com",
+                  "nome": "Fulano da Silva",
+                  "senha": "$2b$08$d/SyueNT/ptWVq26x4XMLOR.NqpVDKxAwB9nD6RK5CTAjFUIIiQfq",
+                  "dataDeCriacao": "2023-10-31T13:49:10.029Z"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Usuários"]
+      }
+    },
+    "/usuarios/login": {
+      "post": {
+        "summary": "Autenticação de usuário",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "email": "joao@outlook.com",
+                "senha": "PrecisaSerUmaSenhaForte123@_"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuário autenticado",
+            "content": {
+              "application/json": {
+                "example": {
+                  "resposta": "Usuário João logado com sucesso!",
+                  "usuario": {
+                    "id": "6529434d37fa0731e81f454c",
+                    "email": "joao@outlook.com",
+                    "nome": "João Augusto",
+                    "senha": "$2b$08$/ucRuBtWR30xk1JObO6mveRcQogsdOxPBELLJI6S/xmTZEqM3ux2q",
+                    "dataDeCriacao": "2023-10-13T13:17:01.219Z"
+                  },
+                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2OTg3NjA0MDgsImV4cCI6MTY5ODg0NjgwOCwic3ViIjoiNjUyOTQzNGDzfa0731e81f454c"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Falha na autenticação",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mensagem": "Usuário ou senha incorretos! Tente novamente."
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Usuários"]
+      }
+    },
+    "/plantas": {
+      "post": {
+        "summary": "Criação de planta",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "idDono": "6529434d37fa0731e81f454c",
+                "nome": "A melhor",
+                "especie": "Manjericão"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Planta criada com sucesso",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "652955aa670b516ea2a104d0",
+                  "idDono": "6529434d37fa0731e81f454c",
+                  "nome": "Planta Legal",
+                  "especie": "Manjericão",
+                  "dataDaPlantacao": "2023-10-13T11:35:22.898Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mensagem": [
+                    "O campo espécie da planta é obrigatório!",
+                    "O campo idDono é obrigatório!, O ID do dono da planta é invalido, Usuário (Dono) não existe"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Plantas"]
+      }
+    },
+    "/plantas/{id}": {
+      "delete": {
+        "summary": "Exclusão de planta",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Exclusão da planta com sucesso",
+            "content": {
+              "application/json": {
+                "example": null
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mensagem": "O ID é inválido!"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mensagem": "Nenhuma planta encontrada"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Plantas"]
+      }
+    },
+    "/plantas/buscar/{id}": {
+      "get": {
+        "summary": "Buscar plantas pelo ID do Dono",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Plantas encontradas com sucesso",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": "652955aa670b516ea2a104d0",
+                    "idDono": "6529434d37fa0731e81f454c",
+                    "nome": "Planta Legal",
+                    "especie": "Manjericão",
+                    "dataDaPlantacao": "2023-10-13T11:35:22.898Z"
+                  },
+                  {
+                    "id": "652ad43ba9cb5d7015350c8b",
+                    "idDono": "6529434d37fa0731e81f454c",
+                    "nome": "The Test Plant",
+                    "especie": "Suculenta",
+                    "dataDaPlantacao": "2023-10-14T14:47:39.714Z"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mensagem": "O ID é inválido!"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mensagem": "Não existe nenhum usuário com esse ID"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Plantas"]
+      }
+    },
+    "/plantas/saude/{id}": {
+      "get": {
+        "summary": "Gerar Relatório de Saúde baseado no último registro da planta",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Relatório de Saúde Gerado com Sucesso",
+            "content": {
+              "application/json": {
+                "example": {
+                  "nitrogenio": "Deficiência",
+                  "fosforo": "Deficiência",
+                  "potassio": "Deficiência",
+                  "umidade": "Deficiência",
+                  "temperatura": "Saudável",
+                  "pH": "Excesso",
+                  "estadoGeral": "Ruim",
+                  "ultimaAtualizacao": "2023-10-25T21:14:07.205Z",
+                  "alertas": [
+                    "Deficiência de nitrogênio pode afetar negativamente a planta. A faixa saudável para o Manjericão é entre 50 a 200mg/Kg.",
+                    "Deficiência de fósforo pode prejudicar o desenvolvimento da planta. A faixa saudável para o Manjericão é entre 30 a 75mg/Kg.",
+                    "Deficiência de potássio pode impactar a saúde da planta. A faixa saudável para o Manjericão é entre 200 a 300mg/Kg.",
+                    "Umidade do ar abaixo de 50% pode levar à desidratação da planta. Monitore a umidade do solo.",
+                    "pH do solo acima de 7.0 pode resultar em deficiência de nutrientes e desequilíbrios no solo. Faça correções no solo."
+                  ]
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mensagem": "A planta não possui nenhum registro"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mensagem": "A planta não existe"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Plantas"]
+      }
+    },
+    "/plantas/registro/{id}": {
+      "get": {
+        "summary": "Recupera o último registro pelo ID da planta",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Último registro consultado com sucesso",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": "6539851fd3348a9efb780838",
+                  "idPlanta": "652955aa670b516ea2a104d0",
+                  "nitrogenio": "0.32",
+                  "fosforo": "0.88",
+                  "potassio": "1.04",
+                  "umidade": "9.4",
+                  "temperatura": "23.8",
+                  "pH": "9.0",
+                  "dataDeRegistro": "2023-10-25T21:14:07.205Z"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mensagem": "Planta não encontrada"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Plantas"]
+      }
+    },
+    "/plantas/{id}": {
+      "patch": {
+        "summary": "Atualiza planta pelo ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "nome": "The Plant",
+                "especie": "Suculenta"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Atualização realizada com sucesso",
+            "content": {
+              "application/json": {
+                "example": {
+                    "idDono": "6529434d37fa0731e81f454c",
+                    "nome": "The Plant",
+                    "especie": "Suculenta"
+                  }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mensagem": [
+                    "O ID é inválido!",
+                    "Os campos nome e espécie são obrigatórios."
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "mensagem": "Nenhuma planta encontrada"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Plantas"]
+      }
+    }
+  }
+}

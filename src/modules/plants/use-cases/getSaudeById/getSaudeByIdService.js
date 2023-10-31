@@ -8,12 +8,12 @@ export const getSaudeByIdService = async(id) => {
 
     const planta = await prisma.plantas.findUnique({where:{id}});
 
-    if(!planta) throw new ErroApp(400, "A planta não existe");
+    if(!planta) throw new ErroApp(404, "A planta não existe");
 
     const ultimoRegistro = await prisma.registros.findFirst({where:{idPlanta: id}, orderBy: {dataDeRegistro: 'desc'}});
 
     if(!ultimoRegistro){
-        throw new ErroApp(404, "A planta não possui nenhum registro");
+        throw new ErroApp(204, "A planta não possui nenhum registro");
     }
 
     return geraRelatorioDeSaude(ultimoRegistro);
