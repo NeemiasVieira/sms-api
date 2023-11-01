@@ -57,6 +57,6 @@ app.use(routes);
 app.use("/api", swaggerUi.serve, express.static("node_modules/swagger-ui-dist/", {index: false}),swaggerUi.serveFiles(swaggerSpec, SwaggerOptions), swaggerUi.setup(swaggerSpec, SwaggerOptions));
 app.use(ErrosComuns);
 
-app.listen(process.env.PORT || 3333, "0.0.0.0", () => {
+app.listen(process.env.PORT || 3333, "0.0.0.0", async () => {
   console.log("▶️  Servidor iniciado com sucesso em http://localhost:3333 🆙");
 });
