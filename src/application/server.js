@@ -1,6 +1,6 @@
 
 import { swaggerSpec } from "./swagger.js";
-import express from "express";
+import express, { Router } from "express";
 import routes from "./routes.js";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
@@ -8,6 +8,8 @@ import { logs } from "../middlewares/logs.js";
 import { ErrosComuns } from "../middlewares/erros.js";
 import cron from "node-cron";
 import prisma from "../database/prisma/prismaClient.js";
+
+const router = Router();
 
 const SwaggerOptions = {
   customSiteTitle: "SMS-API",
