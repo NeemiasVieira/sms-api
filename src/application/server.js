@@ -54,7 +54,7 @@ app.use(logs);
 app.use(routes);
 
 
-app.use("/api", swaggerUi.serve, swaggerUi.serveFiles(swaggerSpec, SwaggerOptions), swaggerUi.setup(swaggerSpec, SwaggerOptions));
+app.use("/api", swaggerUi.serve, express.static("node_modules/swagger-ui-dist/", {index: false}),swaggerUi.serveFiles(swaggerSpec, SwaggerOptions), swaggerUi.setup(swaggerSpec, SwaggerOptions));
 app.use(ErrosComuns);
 
 app.listen(process.env.PORT || 3333, "0.0.0.0", () => {
