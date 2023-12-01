@@ -1,18 +1,19 @@
-import prisma from "../../../../database/prisma/prismaClient.js"
 import { ErroApp } from "../../../../middlewares/erros.js";
+import { Planta, Registro } from "../../../../database/prisma/schema.js";
 
+export const getUltimoRegistroService = async (id) => {
 
-export const getUltimoRegistroService = async(id) => {
+    // Verificar se a planta existe usando Mongoose
+    const plantaExiste = await Planta.findById(id);
 
-    await prisma.$connect();
+    // Se a planta não existir, retornar erro 404
+    if (!plantaExiste) throw new ErroApp(404, "Planta não encontrada");
 
-    const plantaExiste = await prisma.plantas.findUnique({where: {id}});
+    // Procurar o último registro da planta usando Mongoose
+    const ultimoRegistro = await Registro.findOne({ idPlanta: id }).sort({ dataDeRegistro: 'desc' });
 
-    if(!plantaExiste) throw new ErroApp(404, "Planta não encontrada");
-
-    const ultimoRegistro = await prisma.registros.findFirst({where:{idPlanta: id}, orderBy: {dataDeRegistro: 'desc'}});
-
-    await prisma.$disconnect();
+    if(!ultimoRegistro) throw new ErroApp(404, "A planta não possui registros!")
 
     return ultimoRegistro;
-}
+  } 
+

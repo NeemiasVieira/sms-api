@@ -1,21 +1,19 @@
-import prisma from "../../../../database/prisma/prismaClient.js"
 import { ErroApp } from "../../../../middlewares/erros.js";
+import { Planta, Registro } from "../../../../database/prisma/schema.js";
 import { geraRelatorioDeSaude } from "./geraRelatorioDeSaude.js";
 
-export const getSaudeByIdService = async(id) => {
+export const getSaudeByIdService = async (id) => {
 
-    await prisma.$connect();
+    const planta = await Planta.findById(id);
 
-    const planta = await prisma.plantas.findUnique({where:{id}});
+    if (!planta) throw new ErroApp(404, "A planta não existe");
 
-    if(!planta) throw new ErroApp(404, "A planta não existe");
+    const ultimoRegistro = await Registro.findOne({ idPlanta: id }).sort({ dataDeRegistro: 'desc' });
 
-    const ultimoRegistro = await prisma.registros.findFirst({where:{idPlanta: id}, orderBy: {dataDeRegistro: 'desc'}});
-
-    if(!ultimoRegistro){
-        throw new ErroApp(204, "A planta não possui nenhum registro");
+    if (!ultimoRegistro) {
+      throw new ErroApp(204, "A planta não possui nenhum registro");
     }
 
     return geraRelatorioDeSaude(ultimoRegistro);
+  } 
 
-}

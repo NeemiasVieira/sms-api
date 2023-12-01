@@ -1,45 +1,42 @@
 import { ErroApp } from "../../../../middlewares/erros.js";
 import { compare } from "bcrypt";
-import prisma from "../../../../database/prisma/prismaClient.js";
+import { User } from "../../../../database/prisma/schema.js";
 import pkg from "jsonwebtoken";
 const { sign } = pkg;
 
 const loginService = async (email, senha) => {
+  try {
+    email = email.toLowerCase();
 
-  email = email.toLowerCase();
+    const usuarioExiste = await User.findOne({ email });
 
-  //Conexão com o banco de dados
-  await prisma.$connect();
+    if (!usuarioExiste) {
+      throw new ErroApp(401, "Usuário ou senha incorretos! Tente novamente.");
+    }
 
-  //Verifica se o usuário existe pelo e-mail
-  let usuarioExiste = await prisma.users.findUnique({ where: { email } });
+    const senhaIncorreta = !(await compare(senha, usuarioExiste.senha));
 
-  // Tratamento caso o usuário não exista
-  if (!usuarioExiste) {
-    throw new ErroApp(401, "Usuário ou senha incorretos! Tente novamente.");
+    if (senhaIncorreta) {
+      throw new ErroApp(401, "Usuário ou senha incorretos! Tente novamente.");
+    }
+
+    const token = sign({}, process.env.JWT_SECRET, {
+      subject: usuarioExiste.id,
+      expiresIn: "1d",
+    });
+
+    return {
+      resposta: `Usuário ${usuarioExiste.nome.split(" ")[0]} logado com sucesso!`,
+      usuario: usuarioExiste,
+      token,
+    };
+  } catch (error) {
+    // Certifique-se de que a mensagem de erro seja registrada para análise
+    console.error("Erro no serviço de login:", error.message);
+
+    // Propague o erro para ser tratado no ponto de uso do serviço
+    throw error;
   }
-
-  //Verifica a senha do usuário
-  let senhaEmBanco = usuarioExiste.senha;
-  let senhaIncorreta = await compare(senha, senhaEmBanco);
-  senhaIncorreta = !senhaIncorreta;
-
-  //Tratamento de senha incorreta
-  if (senhaIncorreta) {
-    throw new ErroApp(401, "Usuário ou senha incorretos! Tente novamente.");
-  } 
-
-  //Desconexão com o banco de dados
-  await prisma.$disconnect();
-
-  const token = sign({}, process.env.JWT_SECRET, {
-    subject: usuarioExiste.id,
-    expiresIn: "1d",
-  });
-
-  //Caso de sucesso do login           
-  
-  return {resposta: `Usuário ${usuarioExiste.nome.split(" ")[0]} logado com sucesso!`, usuario: usuarioExiste, token};
 };
 
 export default loginService;

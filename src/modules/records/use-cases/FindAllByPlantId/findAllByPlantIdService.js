@@ -1,4 +1,4 @@
-import prisma from "../../../../database/prisma/prismaClient.js";
+import { Registro, Planta } from "../../../../database/prisma/schema.js";
 import { ErroApp } from "../../../../middlewares/erros.js";
 
 export const isObjectId = (string) => {
@@ -15,11 +15,8 @@ export const findAllByPlantIdService = async (
     throw new ErroApp(400, "ID da planta é inválido");
   }
 
-  await prisma.$connect();
+  const plantaExiste = await Planta.findById(idPlanta);
 
-  const plantaExiste = await prisma.plantas.findUnique({
-    where: { id: idPlanta },
-  });
 
   if (!plantaExiste) {
     throw new ErroApp(404, "A planta não existe no banco de dados");
@@ -28,13 +25,8 @@ export const findAllByPlantIdService = async (
   let registros;
 
   if (!intervaloDeDias && !intervaloDeBusca) {
-    registros = await prisma.registros.findMany({
-      where: { idPlanta },
-      orderBy: {
-        dataDeRegistro: "asc",
-      },
-    });
-    await prisma.$disconnect();
+    registros = await Registro.find({ idPlanta }).sort({ dataDeRegistro: 'asc' });
+
     return registros;
   }
 
@@ -43,24 +35,19 @@ export const findAllByPlantIdService = async (
     const startDate = new Date(
       currentDate.getTime() - intervaloDeBusca * 24 * 60 * 60 * 1000
     );
-    registros = await prisma.registros.findMany({
-      where: {
-        idPlanta,
-        dataDeRegistro: {
-          gte: startDate,
-          lte: currentDate,
-        },
+    registros = await Registro.find({
+      idPlanta,
+      dataDeRegistro: {
+        $gte: startDate,
+        $lte: currentDate,
       },
-      orderBy: {
-        dataDeRegistro: "asc",
-      },
-    });
-    await prisma.$disconnect();
+    }).sort({ dataDeRegistro: 'asc' });
+    
     return registros;
   }
 
   if (intervaloDeDias && !intervaloDeBusca) {
-    registros = await prisma.registros.findMany({ where: { idPlanta } });
+    registros = await Registro.find({ idPlanta });
   }
 
   if (intervaloDeDias && intervaloDeBusca) {
@@ -68,15 +55,14 @@ export const findAllByPlantIdService = async (
     const startDate = new Date(
       currentDate.getTime() - intervaloDeBusca * 24 * 60 * 60 * 1000
     );
-    registros = await prisma.registros.findMany({
-      where: {
-        idPlanta,
-        dataDeRegistro: {
-          gte: startDate,
-          lte: currentDate,
-        },
+    registros = await Registro.find({
+      idPlanta,
+      dataDeRegistro: {
+        $gte: startDate,
+        $lte: currentDate,
       },
     });
+    
   }
 
   const aggregatedRecords = [];
@@ -98,8 +84,6 @@ export const findAllByPlantIdService = async (
       }
     }
   }
-
-  await prisma.$disconnect();
 
   return aggregatedRecords.reverse();
 };

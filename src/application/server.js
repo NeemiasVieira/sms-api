@@ -8,6 +8,10 @@ import { logs } from "../middlewares/logs.js";
 import { ErrosComuns } from "../middlewares/erros.js";
 import cron from "node-cron";
 import prisma from "../database/prisma/prismaClient.js";
+import connectToMongo from '../database/prisma/prismaClient.js';
+import * as dotevn from 'dotenv';
+
+dotevn.config();
 
 const router = Router();
 
@@ -50,7 +54,7 @@ cron.schedule(
   }
 );
 
-app.use(logs);
+//app.use(logs);
 app.use(routes);
 
 
@@ -58,5 +62,6 @@ app.use("/api", swaggerUi.serve, express.static("node_modules/swagger-ui-dist/",
 app.use(ErrosComuns);
 
 app.listen(process.env.PORT || 3333, "0.0.0.0", async () => {
+  connectToMongo()
   console.log("▶️  Servidor iniciado com sucesso em http://localhost:3333 🆙");
 });

@@ -9,6 +9,6 @@ const routes = Router();
 routes.use("/usuarios", usersRoutes);
 routes.use("/plantas", plantsRoutes);
 routes.use("/registros", recordsRoutes)
-routes.use("/logs", logsRoutes);
+// routes.use("/logs", logsRoutes);
 
 export default routes;

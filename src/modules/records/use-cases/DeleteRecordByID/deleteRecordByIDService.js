@@ -1,23 +1,25 @@
-import { isObjectId } from "../FindAllByPlantId/findAllByPlantIdService.js"
+import { isObjectId } from "../FindAllByPlantId/findAllByPlantIdService.js";
 import { ErroApp } from "../../../../middlewares/erros.js";
-import prisma from "../../../../database/prisma/prismaClient.js"
+import { Registro } from "../../../../database/prisma/schema.js";
 
-export const deleteRecordByIDService = async(id) => {
+export const deleteRecordByIDService = async (id) => {
 
-    await prisma.$connect();
+    try{
 
-    if(id === "TODOS"){
-        await prisma.registros.deleteMany();
-        return;
-    }
+  if (id === "TODOS") {
+    await Registro.deleteMany();
+    return;
+  }
 
-    if(!isObjectId(id)) throw new ErroApp(400, "ID invalido");
+  if (!isObjectId(id)) throw new ErroApp(400, "ID inválido");
 
-    const registro = await prisma.registros.findUnique({where:{id}});
+  const registro = await Registro.findById(id);
 
-    if(!registro) throw new ErroApp(404, "Registro não existe");
+  if (!registro) throw new ErroApp(404, "Registro não existe");
 
-    await prisma.registros.delete({where: {id}});    
-    
-    await prisma.$disconnect();    
+  await registro.remove();
 }
+catch(error){
+    console.log(error)
+}
+};
