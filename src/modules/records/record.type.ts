@@ -1,0 +1,22 @@
+import { ObjectType, Field } from "@nestjs/graphql";
+@ObjectType()
+export class Record{
+    @Field()
+    id: string;
+    @Field()
+    idPlanta: string;
+    @Field()
+    nitrogenio: string;
+    @Field()
+    fosforo: string;
+    @Field()
+    potassio: string;
+    @Field()
+    umidade: string;
+    @Field()
+    temperatura: string;
+    @Field()
+    pH: string;
+    @Field()
+    dataDeRegistro: Date;
+}
