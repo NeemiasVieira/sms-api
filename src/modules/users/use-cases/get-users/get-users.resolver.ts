@@ -1,6 +1,6 @@
 import { Query, Resolver } from "@nestjs/graphql";
 import { User } from "src/modules/users/user.type";
-import prisma from "src/database/prisma/prisma-client.ts";
+import prisma from "src/database/prisma/prisma-client";
 
 @Resolver()
 export class GetUsersResolver{

@@ -3,7 +3,7 @@ import { CanActivate, ExecutionContext, Injectable, Logger } from '@nestjs/commo
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import * as dotevn from 'dotenv';
-import prisma from 'src/database/prisma/prisma-client.ts';
+import prisma from 'src/database/prisma/prisma-client';
 import { GraphQLError } from 'graphql';
 import { GqlExecutionContext } from '@nestjs/graphql';
 

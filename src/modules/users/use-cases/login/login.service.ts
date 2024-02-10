@@ -3,7 +3,7 @@ import { compare } from "bcrypt"
 import { GraphQLError } from 'graphql';
 import { JwtService } from '@nestjs/jwt';
 import { ILoginUserResponse } from './login.args';
-import prisma from 'src/database/prisma/prisma-client.ts';
+import prisma from 'src/database/prisma/prisma-client';
 
 @Injectable()
 export class LoginService {
