@@ -4,7 +4,7 @@ import { Plant } from '../../plant.type';
 import { UpdatePlantByIdService } from './update-plant-by-id.service';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/middlewares/auth/auth';
-import { AuthUser } from 'src/decorators/AuthUser.decorator';
+import { AuthUser } from '../../../../decorators/authuser.decorator';
 import { UserType } from 'src/modules/users/user.type';
 
 @Resolver()

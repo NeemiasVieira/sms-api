@@ -1,9 +1,8 @@
 import { Args, Field, Mutation, Resolver } from '@nestjs/graphql';
 import { DeletePlantByIdService } from './delete-plant-by-id.service';
-import { ArgsType } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/middlewares/auth/auth';
-import { AuthUser } from 'src/decorators/AuthUser.decorator';
+import { AuthUser } from '../../../../decorators/authuser.decorator';
 import { UserType } from 'src/modules/users/user.type';
 
 @Resolver()
