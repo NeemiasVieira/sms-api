@@ -15,8 +15,10 @@ import { PrismaModule } from './database/prisma/prisma.module';
     driver: ApolloDriver,
     autoSchemaFile: true,
     path: "/",
-    playground: {title: "SMS-API", settings: {"editor.fontFamily": "Montserrat"}},
-    csrfPrevention: false
+    playground: true,
+    csrfPrevention: false,
+    introspection: true,
+    
   }), JwtModule, UsersModule, AuthModule, AuthModule, PlantsModule, RecordsModule, PrismaModule
 ],
   controllers: [],
