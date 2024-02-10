@@ -1,27 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { Plant } from '../../plant.type';
-import prisma from 'src/database/prisma/prisma-client';
 import { ValidationsService } from 'src/utils/validations.service';
 import { GraphQLError } from 'graphql';
+import { PrismaService } from 'src/database/prisma/prisma.service';
 
 @Injectable()
 export class GetPlantasByDonoIdService {
 
-    constructor(private readonly validationsService: ValidationsService){}
-
+    constructor(private readonly validationsService: ValidationsService, private readonly prismaService: PrismaService){}
 
     async getPlanta(id: string): Promise<Plant[]>{
-    await prisma.$connect();
+    await this.prismaService.$connect();
 
     if(!this.validationsService.isObjectId(id)) throw new GraphQLError("ID invalido!");
 
-    const dono = await prisma.users.findUnique({where: {id}});
+    const dono = await this.prismaService.users.findUnique({where: {id}});
 
     if(!dono) throw new GraphQLError("Não existe nenhum usuário com esse ID");
 
-    const plantas = await prisma.plantas.findMany({where: {idDono: id}});
+    const plantas = await this.prismaService.plantas.findMany({where: {idDono: id}});
 
-    await prisma.$disconnect();
+    await this.prismaService.$disconnect();
 
     return plantas;
     

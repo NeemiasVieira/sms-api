@@ -10,8 +10,9 @@ import { GetUltimoRegistroPlantaService } from './use-cases/get-ultimo-registro-
 import { DeleteRecordByIdService } from './use-cases/delete-record-by-id/delete-record-by-id.service';
 import { FindAllByPlantIdService } from './use-cases/find-all-by-plant-id/find-all-by-plant-id.service';
 import { ValidationsService } from 'src/utils/validations.service';
+import { PrismaService } from 'src/database/prisma/prisma.service';
 
 @Module({
-  providers: [GetUltimoRegistroPlantaResolver, CreateRecordResolver, DeleteRecordByIdResolver, FindAllByPlantIdResolver, UpdateRecordByIdResolver, UpdateRecordByIdService, FindAllByPlantIdService, DeleteRecordByIdService, GetUltimoRegistroPlantaService, CreateRecordService, ValidationsService]
+  providers: [GetUltimoRegistroPlantaResolver, CreateRecordResolver, DeleteRecordByIdResolver, FindAllByPlantIdResolver, UpdateRecordByIdResolver, UpdateRecordByIdService, FindAllByPlantIdService, DeleteRecordByIdService, GetUltimoRegistroPlantaService, CreateRecordService, ValidationsService, PrismaService]
 })
 export class RecordsModule {}

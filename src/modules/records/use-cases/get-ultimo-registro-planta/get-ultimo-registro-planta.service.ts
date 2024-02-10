@@ -1,20 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { Record } from '../../record.type';
-import prisma from 'src/database/prisma/prisma-client';
 import { GraphQLError } from 'graphql';
+import { PrismaService } from 'src/database/prisma/prisma.service';
 
 @Injectable()
 export class GetUltimoRegistroPlantaService {
-    async getRecord(id: string): Promise<Record>{
-        await prisma.$connect();
 
-        const plantaExiste = await prisma.plantas.findUnique({where: {id}});
+    constructor(private readonly prismaService: PrismaService){}
+
+    async getRecord(id: string): Promise<Record>{
+        await this.prismaService.$connect();
+
+        const plantaExiste = await this.prismaService.plantas.findUnique({where: {id}});
 
         if(!plantaExiste) throw new GraphQLError("Planta não encontrada");
 
-        const ultimoRegistro = await prisma.registros.findFirst({where:{idPlanta: id}, orderBy: {dataDeRegistro: 'desc'}});
+        const ultimoRegistro = await this.prismaService.registros.findFirst({where:{idPlanta: id}, orderBy: {dataDeRegistro: 'desc'}});
 
-        await prisma.$disconnect();
+        await this.prismaService.$disconnect();
 
         return ultimoRegistro;
     }

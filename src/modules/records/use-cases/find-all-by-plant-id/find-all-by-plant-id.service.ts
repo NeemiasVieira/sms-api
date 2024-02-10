@@ -1,22 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { GraphQLError } from 'graphql';
-import prisma from 'src/database/prisma/prisma-client';
 import { ValidationsService } from 'src/utils/validations.service';
 import { Record } from '../../record.type';
+import { PrismaService } from 'src/database/prisma/prisma.service';
 
 @Injectable()
 export class FindAllByPlantIdService {
 
-    constructor(private readonly validationsService: ValidationsService){}
+    constructor(private readonly validationsService: ValidationsService, private readonly prismaService: PrismaService){}
 
   async getAll(idPlanta: string, intervaloDeDias: number, intervaloDeBusca: number): Promise<Record[]> {
     if (!this.validationsService.isObjectId(idPlanta)) {
         throw new GraphQLError("ID da planta é inválido");
       }
     
-      await prisma.$connect();
+      await this.prismaService.$connect();
     
-      const plantaExiste = await prisma.plantas.findUnique({
+      const plantaExiste = await this.prismaService.plantas.findUnique({
         where: { id: idPlanta },
       });
     
@@ -27,13 +27,13 @@ export class FindAllByPlantIdService {
       let registros;
     
       if (!intervaloDeDias && !intervaloDeBusca) {
-        registros = await prisma.registros.findMany({
+        registros = await this.prismaService.registros.findMany({
           where: { idPlanta },
           orderBy: {
             dataDeRegistro: "asc",
           },
         });
-        await prisma.$disconnect();
+        await this.prismaService.$disconnect();
         return registros;
       }
     
@@ -42,7 +42,7 @@ export class FindAllByPlantIdService {
         const startDate = new Date(
           currentDate.getTime() - intervaloDeBusca * 24 * 60 * 60 * 1000
         );
-        registros = await prisma.registros.findMany({
+        registros = await this.prismaService.registros.findMany({
           where: {
             idPlanta,
             dataDeRegistro: {
@@ -54,12 +54,12 @@ export class FindAllByPlantIdService {
             dataDeRegistro: "asc",
           },
         });
-        await prisma.$disconnect();
+        await this.prismaService.$disconnect();
         return registros;
       }
     
       if (intervaloDeDias && !intervaloDeBusca) {
-        registros = await prisma.registros.findMany({ where: { idPlanta } });
+        registros = await this.prismaService.registros.findMany({ where: { idPlanta } });
       }
     
       if (intervaloDeDias && intervaloDeBusca) {
@@ -67,7 +67,7 @@ export class FindAllByPlantIdService {
         const startDate = new Date(
           currentDate.getTime() - intervaloDeBusca * 24 * 60 * 60 * 1000
         );
-        registros = await prisma.registros.findMany({
+        registros = await this.prismaService.registros.findMany({
           where: {
             idPlanta,
             dataDeRegistro: {
@@ -98,7 +98,7 @@ export class FindAllByPlantIdService {
         }
       }
     
-      await prisma.$disconnect();
+      await this.prismaService.$disconnect();
     
       return aggregatedRecords.reverse();
   }

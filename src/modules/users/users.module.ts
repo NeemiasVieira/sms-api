@@ -5,6 +5,7 @@ import { CreateUserResolver } from './use-cases/create-user/create-user.resolver
 import { LoginService } from './use-cases/login/login.service';
 import { LoginResolver } from './use-cases/login/login.resolver';
 import { JwtModule } from '@nestjs/jwt';
+import { PrismaService } from 'src/database/prisma/prisma.service';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { JwtModule } from '@nestjs/jwt';
     CreateUserService,
     LoginResolver,
     LoginService,
+    PrismaService
   ],
 })
 export class UsersModule {}

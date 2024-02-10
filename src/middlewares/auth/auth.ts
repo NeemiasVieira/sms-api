@@ -3,9 +3,9 @@ import { CanActivate, ExecutionContext, Injectable, Logger } from '@nestjs/commo
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import * as dotevn from 'dotenv';
-import prisma from 'src/database/prisma/prisma-client';
 import { GraphQLError } from 'graphql';
 import { GqlExecutionContext } from '@nestjs/graphql';
+import { PrismaService } from 'src/database/prisma/prisma.service';
 
 dotevn.config();
 
@@ -13,7 +13,7 @@ dotevn.config();
 export class AuthGuard implements CanActivate {
   private readonly logger = new Logger('AuthGuard');
 
-  constructor(private jwtService: JwtService) {}
+  constructor(private jwtService: JwtService, private prismaService: PrismaService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = this.getRequest(context);
@@ -37,8 +37,8 @@ export class AuthGuard implements CanActivate {
   
       // AJUSTA PRA NÃO CHEGAR AQUI SE NÃO TIVER TOKEN VÁLIDO
       const id_usuario = decoded.sub;
-      await prisma.$connect();
-      const usuario = await prisma.users.findUnique({ where: { id: id_usuario } });
+      await this.prismaService.$connect();
+      const usuario = await this.prismaService.users.findUnique({ where: { id: id_usuario } });
   
       if (!usuario) {
         this.logger.error('Usuário não encontrado');
@@ -53,7 +53,7 @@ export class AuthGuard implements CanActivate {
       this.logger.error(`Erro durante a autenticação: ${erro.message}`);
       throw erro;
     } finally {
-      await prisma.$disconnect();
+      await this.prismaService.$disconnect();
     }
   
     return true;

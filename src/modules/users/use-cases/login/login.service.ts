@@ -3,22 +3,22 @@ import { compare } from "bcrypt"
 import { GraphQLError } from 'graphql';
 import { JwtService } from '@nestjs/jwt';
 import { ILoginUserResponse } from './login.args';
-import prisma from 'src/database/prisma/prisma-client';
+import { PrismaService } from 'src/database/prisma/prisma.service';
 
 @Injectable()
 export class LoginService {
 
     private readonly logger = new Logger("LoginService")
 
-    constructor(private jwtService: JwtService) {}
+    constructor(private jwtService: JwtService, private readonly prismaService: PrismaService) {}
 
     public async login(email: string, senha: string): Promise<ILoginUserResponse> {
 
-        await prisma.$connect();
+        await this.prismaService.$connect();
 
         this.logger.log(`Tentativa de login de ${email}`);
 
-        const usuarioExiste = await prisma.users.findUnique({ where: { email } });
+        const usuarioExiste = await this.prismaService.users.findUnique({ where: { email } });
 
         if (!usuarioExiste){
             this.logger.error("Usuário ou senha incorretos");
@@ -40,7 +40,7 @@ export class LoginService {
 
         this.logger.verbose(`Usuário ${email} autenticado.`)
 
-        await prisma.$disconnect();
+        await this.prismaService.$disconnect();
 
         return {
             resposta: `Usuário ${nomes[0]} autenticado com sucesso!`,

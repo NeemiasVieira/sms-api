@@ -4,14 +4,11 @@ import { AppModule } from './app.module';
 //Carrega as variáveis de ambiente
 import * as dotenv from 'dotenv';
 import { ValidationPipe } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
 dotenv.config();
 
 async function bootstrap() {
+  
   const app = await NestFactory.create(AppModule);
-  const prisma = new PrismaClient();
-  console.log(await prisma.$connect())
-  console.log(await prisma.users.findFirst());
   app.enableCors();
   await app.listen(3333);
 

@@ -7,16 +7,18 @@ import { JwtModule } from '@nestjs/jwt';
 import { PlantsModule } from './modules/plants/plants.module';
 import { ValidationsService } from './utils/validations.service';
 import { RecordsModule } from './modules/records/records.module';
+import { PrismaService } from './database/prisma/prisma.service';
+import { PrismaModule } from './database/prisma/prisma.module';
 
 @Module({
   imports: [GraphQLModule.forRoot<ApolloDriverConfig>({
     driver: ApolloDriver,
     autoSchemaFile: true,
     path: "/"
-  }), JwtModule, UsersModule, AuthModule, AuthModule, PlantsModule, RecordsModule
+  }), JwtModule, UsersModule, AuthModule, AuthModule, PlantsModule, RecordsModule, PrismaModule
 ],
   controllers: [],
-  providers: [ValidationsService],
+  providers: [ValidationsService, PrismaService],
 })
 export class AppModule implements OnApplicationBootstrap {
   private readonly logger = new Logger('SMS-API');

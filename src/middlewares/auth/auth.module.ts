@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import * as dotevn from 'dotenv';
 import { AuthGuard } from './auth';
 import { JwtModule } from '@nestjs/jwt';
+import { PrismaService } from 'src/database/prisma/prisma.service';
 
 dotevn.config();
 
@@ -10,7 +11,7 @@ dotevn.config();
     secret: process.env.JWT_SECRET,
     signOptions: { expiresIn: '7h', algorithm: 'HS256' },
   }),],
-  providers: [AuthGuard],
+  providers: [AuthGuard, PrismaService],
   exports: [],
 })
 export class AuthModule {}

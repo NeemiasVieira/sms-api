@@ -1,22 +1,22 @@
 import { Injectable } from "@nestjs/common";
 import { hash } from "bcrypt";
-import prisma from "src/database/prisma/prisma-client";
 import { User } from "../../user.type";
 import { GraphQLError } from 'graphql';
+import { PrismaService } from "src/database/prisma/prisma.service";
 
 @Injectable()
 export class CreateUserService{
-    constructor(){}
+    constructor(private readonly prismaService: PrismaService){}
 
     async createUser(nome: string, email: string, senha: string): Promise<User>{
 
-        await prisma.$connect();
+        await this.prismaService.$connect();
 
         if(!nome || !email || !senha){
             throw new GraphQLError("Todos os campos são obrigatórios!");
         }
     
-        const usuarioExiste = await prisma.users.findUnique({where: {email}});     
+        const usuarioExiste = await this.prismaService.users.findUnique({where: {email}});     
     
         if(usuarioExiste){
             throw new GraphQLError("Usuário já existe");
@@ -34,9 +34,9 @@ export class CreateUserService{
     
         const dataDeCriacao = new Date();
     
-        const newUser = await prisma.users.create({data:{nome, email, senha: senhaCriptografada, dataDeCriacao}})
+        const newUser = await this.prismaService.users.create({data:{nome, email, senha: senhaCriptografada, dataDeCriacao}})
     
-        await prisma.$disconnect();
+        await this.prismaService.$disconnect();
     
         return newUser;
 
