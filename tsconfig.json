@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "paths": {
+      "@decorators/*": ["src/decorators/*"]
+    },
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,

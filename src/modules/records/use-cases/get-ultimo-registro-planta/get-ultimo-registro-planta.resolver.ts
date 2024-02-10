@@ -2,7 +2,7 @@ import { Args, Resolver, Query } from '@nestjs/graphql';
 import { Record } from '../../record.type';
 import { GetUltimoRegistroPlantaService } from './get-ultimo-registro-planta.service';
 import { UserType } from 'src/modules/users/user.type';
-import { AuthUser } from '../../../../decorators/authuser.decorator';
+import { AuthUser } from '@decorators/authuser.decorator';
 import { AuthGuard } from 'src/middlewares/auth/auth';
 import { UseGuards } from '@nestjs/common';
 

@@ -2,7 +2,7 @@ import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { CreatePlantService } from './create-plant.service';
 import { CreatePlantArgs } from './create-plant.args';
 import { Plant } from '../../plant.type';
-import { AuthUser } from 'src/decorators/authuser.decorator';
+import { AuthUser } from '@decorators/authuser.decorator';
 import { UserType } from 'src/modules/users/user.type';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/middlewares/auth/auth';
