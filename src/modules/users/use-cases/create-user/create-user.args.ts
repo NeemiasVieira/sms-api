@@ -1,7 +1,7 @@
 import { ArgsType, Field } from '@nestjs/graphql';
 
 @ArgsType()
-export class UserArgs {
+export class CreateUserArgs {
   
   @Field()
   email: string

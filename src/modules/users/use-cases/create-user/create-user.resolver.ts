@@ -1,5 +1,5 @@
 import { Args, Mutation, Resolver } from "@nestjs/graphql";
-import { UserArgs } from "src/modules/users/user.args";
+import { CreateUserArgs } from "./create-user.args";
 import { User } from "src/modules/users/user.type";
 import { CreateUserService } from "./create-user.service";
 import { UseGuards } from "@nestjs/common";
@@ -12,7 +12,7 @@ export class CreateUserResolver{
 
     @Mutation(() => User)
     // @UseGuards(AuthGuard)
-    async createUser(@Args() novoUsuario : UserArgs) : Promise<User>{
+    async createUser(@Args() novoUsuario : CreateUserArgs) : Promise<User>{
 
         const {nome, email, senha} = novoUsuario;
 
