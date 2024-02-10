@@ -14,7 +14,9 @@ import { PrismaModule } from './database/prisma/prisma.module';
   imports: [GraphQLModule.forRoot<ApolloDriverConfig>({
     driver: ApolloDriver,
     autoSchemaFile: true,
-    path: "/"
+    path: "/",
+    playground: {title: "SMS-API", settings: {"editor.fontFamily": "Montserrat"}},
+    csrfPrevention: false
   }), JwtModule, UsersModule, AuthModule, AuthModule, PlantsModule, RecordsModule, PrismaModule
 ],
   controllers: [],
