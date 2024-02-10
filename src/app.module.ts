@@ -11,7 +11,8 @@ import { RecordsModule } from './modules/records/records.module';
 @Module({
   imports: [GraphQLModule.forRoot<ApolloDriverConfig>({
     driver: ApolloDriver,
-    autoSchemaFile: true
+    autoSchemaFile: true,
+    path: "/"
   }), JwtModule, UsersModule, AuthModule, AuthModule, PlantsModule, RecordsModule
 ],
   controllers: [],

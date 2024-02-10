@@ -5,6 +5,10 @@ import { LoginService } from "./login.service";
 
 @Resolver()
 export class LoginResolver{
+    /**
+   * Retorna um usuário pelo ID.
+   * @param id - ID do usuário.
+   */
 
     constructor(private readonly loginService: LoginService){}
 

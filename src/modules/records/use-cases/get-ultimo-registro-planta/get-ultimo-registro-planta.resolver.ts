@@ -8,7 +8,7 @@ export class GetUltimoRegistroPlantaResolver {
     constructor(private readonly getUltimoRegistroPlantaService: GetUltimoRegistroPlantaService){}
 
     @Query(() => Record)
-    async getLastRecord(@Args('idPlanta') idPlanta: string): Promise<Record>{
+    async getLastRecordByPlant(@Args('idPlanta') idPlanta: string): Promise<Record>{
         return await this.getUltimoRegistroPlantaService.getRecord(idPlanta);
     }
 }

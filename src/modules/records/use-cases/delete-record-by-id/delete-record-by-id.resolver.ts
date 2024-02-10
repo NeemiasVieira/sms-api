@@ -7,7 +7,7 @@ export class DeleteRecordByIdResolver {
     constructor(private readonly deleteRecordByIdService: DeleteRecordByIdService){}
 
     @Mutation(() => String)
-    async deleteRecordById(@Args('id') id: string): Promise<string>{
+    async deleteRecord(@Args('id') id: string): Promise<string>{
         return await this.deleteRecordByIdService.deleteRecord(id);
     }
 }

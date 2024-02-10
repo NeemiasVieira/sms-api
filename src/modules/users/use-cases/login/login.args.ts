@@ -18,7 +18,7 @@ export class LoginUserArgs {
 @ObjectType()
 export class ILoginUserResponse {
 
-  @Field()
+  @Field({description: "Uma mensagem de resposta da requisição"})
   resposta: string
   @Field()
   usuario: User

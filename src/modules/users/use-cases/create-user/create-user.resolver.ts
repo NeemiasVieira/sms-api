@@ -11,7 +11,7 @@ export class CreateUserResolver{
     constructor(private readonly createUserService: CreateUserService){}
 
     @Mutation(() => User)
-    @UseGuards(AuthGuard)
+    // @UseGuards(AuthGuard)
     async createUser(@Args() novoUsuario : UserArgs) : Promise<User>{
 
         const {nome, email, senha} = novoUsuario;
