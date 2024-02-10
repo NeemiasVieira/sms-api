@@ -3,7 +3,10 @@
     "paths": {
       "@decorators/*": ["src/decorators/*"]
     },
-    "module": "commonjs",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
