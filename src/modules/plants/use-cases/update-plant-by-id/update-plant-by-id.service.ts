@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Plant } from '../../plant.type';
 import { ValidationsService } from 'src/utils/validations.service';
 import { GraphQLError } from 'graphql';
-import prisma from 'src/database/prisma/prisma-client.ts';
+import prisma from 'src/database/prisma/prisma-client';
 import { IPlantaAtualizada } from './update-plant.types';
 
 @Injectable()

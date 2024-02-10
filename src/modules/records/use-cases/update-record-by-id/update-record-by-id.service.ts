@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { IUpdateRecordArgs } from './update-record-by-id.types';
 import { ValidationsService } from 'src/utils/validations.service';
 import { GraphQLError } from 'graphql';
-import prisma from 'src/database/prisma/prisma-client.ts';
+import prisma from 'src/database/prisma/prisma-client';
 import { Record } from '../../record.type';
 
 @Injectable()

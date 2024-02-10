@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { GraphQLError } from 'graphql';
-import prisma from 'src/database/prisma/prisma-client.ts';
+import prisma from 'src/database/prisma/prisma-client';
 import { Plant } from '../../plant.type';
 
 @Injectable()

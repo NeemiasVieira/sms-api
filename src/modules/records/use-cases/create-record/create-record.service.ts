@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ICreateRecordArgs } from './create-records.args';
-import prisma from 'src/database/prisma/prisma-client.ts';
+import prisma from 'src/database/prisma/prisma-client';
 import { Record } from '../../record.type';
 
 @Injectable()

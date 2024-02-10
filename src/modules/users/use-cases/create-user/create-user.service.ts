@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { hash } from "bcrypt";
-import prisma from "src/database/prisma/prisma-client.ts";
+import prisma from "src/database/prisma/prisma-client";
 import { User } from "../../user.type";
 import { GraphQLError } from 'graphql';
 

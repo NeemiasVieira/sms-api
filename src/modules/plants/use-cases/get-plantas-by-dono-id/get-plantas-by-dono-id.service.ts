@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Plant } from '../../plant.type';
-import prisma from 'src/database/prisma/prisma-client.ts';
+import prisma from 'src/database/prisma/prisma-client';
 import { ValidationsService } from 'src/utils/validations.service';
 import { GraphQLError } from 'graphql';
 
