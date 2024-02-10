@@ -15,7 +15,17 @@ import { PrismaModule } from './database/prisma/prisma.module';
     driver: ApolloDriver,
     autoSchemaFile: true,
     path: "/",
-    playground: true,
+    playground: {tabs: [{
+      endpoint: "http://localhost:3333",
+      query: `query GetToken {
+    getToken(email: "coloque seu e-mail", senha: "coloque sua senha") {
+      Authorization
+  }
+}`,
+    headers: {Authorization: ""},
+    name: "Login",
+    variables: "$email, $senha"
+    }]},
     csrfPrevention: false,
     introspection: true,
     

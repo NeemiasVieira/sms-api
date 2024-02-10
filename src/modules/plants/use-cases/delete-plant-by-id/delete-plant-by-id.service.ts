@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { GraphQLError } from 'graphql';
 import { PrismaService } from 'src/database/prisma/prisma.service';
+import { UserType } from 'src/modules/users/user.type';
 import { ValidationsService } from 'src/utils/validations.service';
 
 @Injectable()
@@ -8,7 +9,7 @@ export class DeletePlantByIdService {
 
     constructor(private readonly validationsService: ValidationsService, private readonly prismaService: PrismaService){}
 
-    async deletePlant(id: string): Promise<string>{
+    async deletePlant(id: string, usuario: UserType): Promise<string>{
 
     if(!this.validationsService.isObjectId(id)) throw new GraphQLError("O ID é invalido!");
 
@@ -17,6 +18,8 @@ export class DeletePlantByIdService {
     const plantaExiste = await this.prismaService.plantas.findUnique({where:{id}});
 
     if(!plantaExiste) throw new GraphQLError("Nenhuma planta encontrada");
+
+    if(plantaExiste.idDono !== usuario.id) throw new GraphQLError("Usuário não autorizado");
 
     await this.prismaService.plantas.delete({where:{id}});
 

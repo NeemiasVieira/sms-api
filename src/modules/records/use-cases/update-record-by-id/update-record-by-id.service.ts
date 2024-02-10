@@ -4,6 +4,7 @@ import { ValidationsService } from 'src/utils/validations.service';
 import { GraphQLError } from 'graphql';
 import { Record } from '../../record.type';
 import { PrismaService } from 'src/database/prisma/prisma.service';
+import { UserType } from 'src/modules/users/user.type';
 
 @Injectable()
 export class UpdateRecordByIdService {
@@ -12,7 +13,7 @@ export class UpdateRecordByIdService {
 
     async updateRecord(args: IUpdateRecordArgs): Promise<Record>{
 
-        const {id, ...data} = args
+        const {id, usuario, ...data} = args
 
         if(!this.validationsService.isObjectId(id)) throw new GraphQLError("ID invalido!");
 
@@ -21,6 +22,10 @@ export class UpdateRecordByIdService {
         const registro = await this.prismaService.registros.findUnique({where:{id}});
 
         if(!registro) throw new GraphQLError("Registro não encontrado");
+
+        const planta = await this.prismaService.plantas.findUnique({where: {id: registro.idPlanta}});
+
+        if(planta.idDono !== args.usuario.id) throw new GraphQLError("Usuário não autorizado");
 
         const registroAtualizado = await this.prismaService.registros.update({where: {id}, data: {
             ...data

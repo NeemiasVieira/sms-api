@@ -1,9 +1,13 @@
 import { ArgsType, Field } from "@nestjs/graphql";
 import { IsString, IsDateString, IsNotEmpty } from "class-validator";
+import { UserType } from "src/modules/users/user.type";
 
 
 @ArgsType()
 export class IUpdateRecordArgs{
+
+    @Field((type) => UserType, {nullable: true})
+    usuario?: UserType
 
     @Field()
     @IsNotEmpty({message: "O campo id é obrigatório"})

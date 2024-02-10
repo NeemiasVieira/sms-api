@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ICreateRecordArgs } from './create-records.args';
 import { Record } from '../../record.type';
 import { PrismaService } from 'src/database/prisma/prisma.service';
+import { GraphQLError } from 'graphql';
 
 @Injectable()
 export class CreateRecordService {
@@ -22,6 +23,10 @@ export class CreateRecordService {
     await this.prismaService.$connect();
 
     const dataDeRegistro = new Date();
+
+    const planta = await this.prismaService.plantas.findUnique({where: {id: idPlanta}});
+
+    if(planta.idDono !== data.usuario.id) throw new GraphQLError("Usuário não autorizado");
 
     const novoRegistro = this.prismaService.registros.create({
       data: {

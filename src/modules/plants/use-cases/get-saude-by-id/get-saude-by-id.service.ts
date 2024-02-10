@@ -2,19 +2,22 @@ import { Injectable } from '@nestjs/common';
 import { IRegistroPlanta, IRelatorioSaude } from './relatorio-saude.types';
 import { GraphQLError } from 'graphql';
 import { PrismaService } from 'src/database/prisma/prisma.service';
+import { UserType } from 'src/modules/users/user.type';
 
 @Injectable()
 export class GetSaudeByIdService {
 
     constructor(private readonly prismaService: PrismaService){}
 
-    public async getSaude(id): Promise<IRelatorioSaude>{
+    public async getSaude(id, usuario: UserType): Promise<IRelatorioSaude>{
 
         await this.prismaService.$connect();
 
         const planta = await this.prismaService.plantas.findUnique({where:{id}});
 
         if(!planta) throw new GraphQLError("A planta não existe");
+
+        if(planta.idDono !== usuario.id) throw new GraphQLError("Usuário não autorizado");
 
         const ultimoRegistro = await this.prismaService.registros.findFirst({where:{idPlanta: id}, orderBy: {dataDeRegistro: 'desc'}});
 

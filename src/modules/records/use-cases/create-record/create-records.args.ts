@@ -1,8 +1,14 @@
 import { ArgsType, Field } from '@nestjs/graphql';
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsObject } from 'class-validator';
+import { UserType } from 'src/modules/users/user.type';
 
 @ArgsType()
 export class ICreateRecordArgs {
+
+  @Field((type) => UserType, {nullable: true})
+  @IsObject()
+  usuario: UserType
+
   @Field()
   @IsString()
   @IsNotEmpty({ message: 'O campo idPlanta é obrigatório' })

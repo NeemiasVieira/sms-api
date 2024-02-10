@@ -14,6 +14,12 @@ export class GetUsersResolver{
 
         const allUsers = await this.prismaService.users.findMany();
 
+        allUsers.forEach((user) => {
+            user.email = "informaçao confidencial";
+            user.id = "informação confidencial"
+            user.senha = "informação confidencial e criptografada"
+        })
+
         await this.prismaService.$disconnect();
 
         return allUsers;

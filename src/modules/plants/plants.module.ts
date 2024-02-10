@@ -11,8 +11,10 @@ import { UpdatePlantByIdService } from './use-cases/update-plant-by-id/update-pl
 import { UpdatePlantByIdResolver } from './use-cases/update-plant-by-id/update-plant-by-id.resolver';
 import { ValidationsService } from 'src/utils/validations.service';
 import { PrismaService } from 'src/database/prisma/prisma.service';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
+  imports: [JwtModule],
   providers: [CreatePlantResolver, CreatePlantService, DeletePlantByIdService, DeletePlantByIdResolver, GetPlantasByDonoIdResolver, GetPlantasByDonoIdService, GetSaudeByIdService, GetSaudeByIdResolver, UpdatePlantByIdService, UpdatePlantByIdResolver, ValidationsService, PrismaService]
 })
 export class PlantsModule {}

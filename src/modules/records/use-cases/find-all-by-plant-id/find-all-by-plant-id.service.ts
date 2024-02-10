@@ -3,13 +3,17 @@ import { GraphQLError } from 'graphql';
 import { ValidationsService } from 'src/utils/validations.service';
 import { Record } from '../../record.type';
 import { PrismaService } from 'src/database/prisma/prisma.service';
+import { IFindAllByPlantIdArgs } from './find-all-by-plant-id.types';
 
 @Injectable()
 export class FindAllByPlantIdService {
 
     constructor(private readonly validationsService: ValidationsService, private readonly prismaService: PrismaService){}
 
-  async getAll(idPlanta: string, intervaloDeDias: number, intervaloDeBusca: number): Promise<Record[]> {
+  async getAll(args: IFindAllByPlantIdArgs): Promise<Record[]> {
+
+    const { idPlanta, intervaloDeDias, intervaloDeBusca, usuario } = args;
+
     if (!this.validationsService.isObjectId(idPlanta)) {
         throw new GraphQLError("ID da planta é inválido");
       }
@@ -23,6 +27,8 @@ export class FindAllByPlantIdService {
       if (!plantaExiste) {
         throw new GraphQLError("A planta não existe no banco de dados");
       }
+
+      if(plantaExiste.idDono !== usuario.id) throw new GraphQLError("Usuário não autorizado");
     
       let registros;
     
