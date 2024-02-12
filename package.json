@@ -1,6 +1,7 @@
 {
   "name": "sms-api",
   "version": "1.2.0",
+  "type": "module",
   "description": "",
   "author": "",
   "private": true,
