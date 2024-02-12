@@ -1,8 +1,5 @@
 {
   "compilerOptions": {
-    "paths": {
-      "@decorators/*": ["src/decorators/*"]
-    },
     "module": "CommonJS",
     "target": "ES2020",
     "moduleResolution": "node",

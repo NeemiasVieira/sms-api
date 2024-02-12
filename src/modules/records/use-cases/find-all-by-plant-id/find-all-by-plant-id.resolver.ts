@@ -4,8 +4,8 @@ import { FindAllByPlantIdService } from './find-all-by-plant-id.service';
 import { IFindAllByPlantIdArgs } from './find-all-by-plant-id.types';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/middlewares/auth/auth';
-import { AuthUser } from '@decorators/authuser.decorator';
 import { UserType } from 'src/modules/users/user.type';
+import { AuthUser } from 'src/decorators/authuser.decorator';
 
 @Resolver()
 export class FindAllByPlantIdResolver {

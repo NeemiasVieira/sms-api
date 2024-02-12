@@ -3,8 +3,8 @@ import { Plant } from '../../plant.type';
 import { GetPlantasByDonoIdService } from './get-plantas-by-dono-id.service';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/middlewares/auth/auth';
-import { AuthUser } from '@decorators/authuser.decorator';
 import { UserType } from 'src/modules/users/user.type';
+import { AuthUser } from 'src/decorators/authuser.decorator';
 
 @Resolver()
 export class GetPlantasByDonoIdResolver {

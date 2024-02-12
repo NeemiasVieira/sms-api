@@ -2,8 +2,8 @@ import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { DeleteRecordByIdService } from './delete-record-by-id.service';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/middlewares/auth/auth';
-import { AuthUser } from '@decorators/authuser.decorator';
 import { UserType } from 'src/modules/users/user.type';
+import { AuthUser } from 'src/decorators/authuser.decorator';
 
 @Resolver()
 export class DeleteRecordByIdResolver {
