@@ -21,6 +21,9 @@ export class IRelatorioSaude {
     pH: string;
 
     @Field()
+    luz: string;
+
+    @Field()
     estadoGeral: string;
 
     @Field()
@@ -36,6 +39,7 @@ export interface IRegistroPlanta {
     nitrogenio: string;
     fosforo: string;
     potassio: string;
+    luz: string;
     umidade: string;
     temperatura: string;
     pH: string;

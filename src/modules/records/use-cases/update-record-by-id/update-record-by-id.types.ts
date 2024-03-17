@@ -42,6 +42,10 @@ export class IUpdateRecordArgs{
     pH?: string;
 
     @Field({nullable: true})
+    @IsString()
+    luz: string;
+
+    @Field({nullable: true})
     @IsDateString()
     dataDeRegistro?: Date;
 }

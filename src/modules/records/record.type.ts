@@ -18,5 +18,7 @@ export class Record{
     @Field()
     pH: string;
     @Field()
+    luz: string
+    @Field()
     dataDeRegistro: Date;
 }

@@ -43,4 +43,10 @@ export class ICreateRecordArgs {
   @IsString()
   @IsNotEmpty({ message: 'O campo pH é obrigatório' })
   pH: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty({message: 'O campo luz é obrigatório'})
+  luz: string;
+
 }

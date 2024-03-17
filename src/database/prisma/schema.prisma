@@ -45,6 +45,7 @@ model registros {
   umidade         String
   temperatura     String
   pH              String
+  luz             String
   dataDeRegistro  DateTime
 }
 

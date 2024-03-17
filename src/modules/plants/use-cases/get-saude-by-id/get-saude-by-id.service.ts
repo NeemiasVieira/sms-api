@@ -59,6 +59,9 @@ export class GetSaudeByIdService {
                         case "pH":
                             alertas.push("pH do solo abaixo de 6.0 pode dificultar a absorção de nutrientes pela planta. Faça correções no solo.");
                             break;
+                        case "luz":
+                            alertas.push("Atenção: Sua planta pode não estar recebendo luz suficiente! Isso pode afetar negativamente o seu crescimento e saúde. Certifique-se de colocá-la em um local com mais luz solar ou considere o uso de luzes artificiais de crescimento.")
+                            break;
                         default:
                             alertas.push(`Deficiência de ${nomeVariavel} pode afetar negativamente a planta. Consulte um especialista em nutrição vegetal.`);
                     }
@@ -86,6 +89,8 @@ export class GetSaudeByIdService {
                         case "pH":
                             alertas.push("pH do solo acima de 7.0 pode resultar em deficiência de nutrientes e desequilíbrios no solo. Faça correções no solo.");
                             break;
+                        case "luz":
+                            alertas.push("Problemas com o sensor de luz, procure o suporte");
                         default:
                             alertas.push(`Excesso de ${nomeVariavel} pode prejudicar a saúde da planta. Consulte um especialista em nutrição vegetal.`);
                     }
@@ -99,6 +104,7 @@ export class GetSaudeByIdService {
             let temperatura = avaliarSaude(Number(ultimoRegistro.temperatura), 10, 35, "temperatura");
             let umidade = avaliarSaude(Number(ultimoRegistro.umidade), 50, 70, "umidade");
             let pH = avaliarSaude(Number(ultimoRegistro.pH), 6, 7, "pH");
+            let luz = avaliarSaude(Number(ultimoRegistro.luz),50, 101, "luz" );
         
             let estadoGeral = "Ruim";
             switch (pontuacao){
@@ -115,7 +121,7 @@ export class GetSaudeByIdService {
         
             const ultimaAtualizacao = ultimoRegistro.dataDeRegistro;
         
-            return { nitrogenio, fosforo, potassio, umidade, temperatura, pH, estadoGeral, ultimaAtualizacao, alertas };
+            return { nitrogenio, fosforo, potassio, luz,  umidade, temperatura, pH, estadoGeral, ultimaAtualizacao, alertas };
         };
         
     
