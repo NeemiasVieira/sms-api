@@ -20,4 +20,3 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       PASSWORD_SALT: ${PASSWORD_SALT}
     env_file: .env
-      

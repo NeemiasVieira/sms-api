@@ -13,39 +13,49 @@ datasource db {
 model users {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   email         String   @unique(map: "findEmail")
-  nome          String    
+  nome          String
   senha         String
   dataDeCriacao DateTime
+  profile       String
 }
 
 model plantas {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  idDono      String
-  nome        String
-  especie     String
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  idDono          String
+  nome            String
+  especie         String
   dataDaPlantacao DateTime
 }
 
-model logs {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  request     String
-  response    String
-  time        String
-  data        Json
+model especies {
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  nome           String
+  descricao      String
+  minNitrogenio  String
+  minFosforo     String
+  minPotassio    String
+  minLuz         String
+  minUmidade     String
+  minTemperatura String
+  minPh          String
+  maxNitrogenio  String
+  maxFosforo     String
+  maxPotassio    String
+  maxLuz         String
+  maxUmidade     String
+  maxTemperatura String
+  maxPh          String
 }
-
-// schema.prisma
 
 model registros {
-  id              String         @id @default(auto()) @map("_id") @db.ObjectId
-  idPlanta        String
-  nitrogenio      String
-  fosforo         String
-  potassio        String
-  umidade         String
-  temperatura     String
-  pH              String
-  luz             String
-  dataDeRegistro  DateTime
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  idPlanta       String
+  nitrogenio     String
+  fosforo        String
+  potassio       String
+  umidade        String
+  temperatura    String
+  pH             String
+  luz            String
+  dataDeRegistro DateTime
 }
-

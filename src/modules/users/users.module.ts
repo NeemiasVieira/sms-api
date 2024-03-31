@@ -6,6 +6,7 @@ import { LoginService } from './use-cases/login/login.service';
 import { LoginResolver } from './use-cases/login/login.resolver';
 import { JwtModule } from '@nestjs/jwt';
 import { PrismaService } from 'src/database/prisma/prisma.service';
+import { GetUserProfile } from './use-cases/get-profile/get-profile.resolver';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { PrismaService } from 'src/database/prisma/prisma.service';
   providers: [
     GetUsersResolver,
     CreateUserResolver,
+    GetUserProfile,
     CreateUserService,
     LoginResolver,
     LoginService,

@@ -34,7 +34,7 @@ export class CreateUserService{
     
         const dataDeCriacao = new Date();
     
-        const newUser = await this.prismaService.users.create({data:{nome, email, senha: senhaCriptografada, dataDeCriacao}})
+        const newUser = await this.prismaService.users.create({data:{nome, email, senha: senhaCriptografada, dataDeCriacao, profile: "user"}});
     
         await this.prismaService.$disconnect();
     

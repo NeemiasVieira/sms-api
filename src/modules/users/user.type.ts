@@ -28,4 +28,6 @@ export class UserType{
   senha: string
   @Field()
   dataDeCriacao: Date
+  @Field()
+  profile: string;
 }
