@@ -13,6 +13,8 @@ export class User {
   senha: string
   @Field()
   dataDeCriacao: Date
+  @Field()
+  profile: string;
 
 }
 
