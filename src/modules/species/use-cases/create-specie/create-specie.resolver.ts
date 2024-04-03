@@ -22,6 +22,10 @@ export class CreateSpecieResolver {
 
     const { parametros, ...data } = args;
 
+    const especieExiste = await this.prismaService.especies.findFirst({where: {nome: args.nome}});
+
+    if(especieExiste) throw new GraphQLError("Essa espécie já foi cadastrada no sistema");
+
     const novaEspecie = await this.prismaService.especies.create({ data: {
       ...data,
       ...this.specieMapper.mapParametros(parametros)
