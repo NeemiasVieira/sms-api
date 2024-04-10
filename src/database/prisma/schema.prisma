@@ -58,4 +58,6 @@ model registros {
   pH             String
   luz            String
   dataDeRegistro DateTime
+  imagem         String?
+  diagnostico    String?
 }

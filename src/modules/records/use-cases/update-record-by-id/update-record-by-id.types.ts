@@ -48,4 +48,12 @@ export class IUpdateRecordArgs{
     @Field({nullable: true})
     @IsDateString()
     dataDeRegistro?: Date;
+
+    @Field({nullable: true})
+    @IsString()
+    imagem?: string;
+
+    @Field({nullable: true})
+    @IsString()
+    diagnostico?: string
 }

@@ -21,4 +21,8 @@ export class Record{
     luz: string
     @Field()
     dataDeRegistro: Date;
+    @Field({nullable: true})
+    imagem?: string;
+    @Field({nullable: true})
+    diagnostico?: string
 }

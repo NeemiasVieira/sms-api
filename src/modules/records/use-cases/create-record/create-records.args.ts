@@ -49,4 +49,12 @@ export class ICreateRecordArgs {
   @IsNotEmpty({message: 'O campo luz é obrigatório'})
   luz: string;
 
+  @Field({nullable: true})
+  @IsString()
+  imagem?: string;
+
+  @Field({nullable: true})
+  @IsString()
+  diagnostico?: string
+
 }

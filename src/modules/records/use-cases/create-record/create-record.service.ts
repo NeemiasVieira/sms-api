@@ -21,8 +21,8 @@ export class CreateRecordService {
   constructor(private readonly prismaService: PrismaService){}
 
   async createRecord(data: ICreateRecordArgs): Promise<Record> {
-    const { idPlanta } = data;
 
+    const { idPlanta } = data;
     const { usuario, ...dados } = data;
 
     dados.luz = calcularPorcentagemDeLuz(Number(dados.luz));
@@ -34,7 +34,7 @@ export class CreateRecordService {
     const planta = await this.prismaService.plantas.findUnique({where: {id: idPlanta}});
 
     if(planta.idDono !== usuario.id) throw new GraphQLError("Usuário não autorizado");
-
+    
     const novoRegistro = this.prismaService.registros.create({
       data: {
         ...dados,
