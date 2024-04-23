@@ -13,9 +13,10 @@ import { ValidationsService } from 'src/utils/validations.service';
 import { PrismaService } from 'src/database/prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { SpecieMapper } from '../species/specie-mapper.service';
+import { GetSaudeByRecordIdResolver } from './use-cases/get-saude-by-record-id/get-saude-by-record-id.resolver';
 
 @Module({
   imports: [JwtModule],
-  providers: [CreatePlantResolver, CreatePlantService, DeletePlantByIdService, DeletePlantByIdResolver, GetPlantasByDonoIdResolver, GetPlantasByDonoIdService, GetSaudeByIdService, GetSaudeByIdResolver, UpdatePlantByIdService, UpdatePlantByIdResolver, ValidationsService, PrismaService, SpecieMapper]
+  providers: [CreatePlantResolver, CreatePlantService, DeletePlantByIdService, DeletePlantByIdResolver, GetPlantasByDonoIdResolver, GetPlantasByDonoIdService, GetSaudeByIdService, GetSaudeByIdResolver, UpdatePlantByIdService, UpdatePlantByIdResolver, ValidationsService, PrismaService, SpecieMapper, GetSaudeByRecordIdResolver]
 })
 export class PlantsModule {}

@@ -3,47 +3,80 @@ import { IRegistroPlanta, IRelatorioSaude } from './relatorio-saude.types';
 import { GraphQLError } from 'graphql';
 import { PrismaService } from 'src/database/prisma/prisma.service';
 import { UserType } from 'src/modules/users/user.type';
-import { IParametros } from 'src/modules/species/use-cases/create-specie/create-specie.args';
 import { SpecieMapper } from 'src/modules/species/specie-mapper.service';
 import { Specie } from 'src/modules/species/specie.type';
+import { ValidationsService } from 'src/utils/validations.service';
 
 @Injectable()
 export class GetSaudeByIdService {
 
     constructor(
         private readonly prismaService: PrismaService,
-        private readonly specieMapper: SpecieMapper
+        private readonly specieMapper: SpecieMapper,
         ){}
 
-    public async getSaude(id, usuario: UserType): Promise<IRelatorioSaude>{
+    public async getSaude(usuario: UserType, idPlanta?: string, idRegistro?: string): Promise<IRelatorioSaude>{
 
         await this.prismaService.$connect();
 
-        const planta = await this.prismaService.plantas.findUnique({where:{id}});
-
-        if(!planta) throw new GraphQLError("A planta não existe");
-
-        const especie = await this.prismaService.especies.findFirst({where: {nome: planta.especie}});
-
-        if(!especie) throw new GraphQLError("A espécie da planta nao foi cadastrada no banco de dados");
-
-        const specie = this.specieMapper.reverseMapParametros(especie);
-
-        const ultimoRegistro = await this.prismaService.registros.findFirst({where:{idPlanta: id}, orderBy: {dataDeRegistro: 'desc'}});
-
-        if(!ultimoRegistro){
-            throw new GraphQLError("A planta não possui nenhum registro");
-        }
-
-        if(planta.idDono !== usuario.id) throw new GraphQLError("Usuário não autorizado");
+        const { registro, specie } = await this.verificarDados(usuario, idPlanta, idRegistro);
 
         await this.prismaService.$disconnect();
 
-        return this.gerarRelatorioDeSaude(ultimoRegistro, specie);
+        return this.gerarRelatorioDeSaude(registro, specie);
 
     }
 
-    private gerarRelatorioDeSaude(ultimoRegistro: IRegistroPlanta, specie: Specie): IRelatorioSaude{
+    private verificarDados = async(usuario: UserType, idPlanta?: string, idRegistro?: string) => {
+
+        if(idPlanta && idRegistro) throw new GraphQLError("Escolha apenas um tipo de consulta passando apenas um argumento opcional");
+
+        if(!idPlanta && !idRegistro) throw new GraphQLError("É necessário passar um registro ou uma planta para a service de relatório de saúde")
+
+        else if(idPlanta && !idRegistro){
+            const planta = await this.prismaService.plantas.findUnique({where:{id: idPlanta}});
+
+            if(!planta) throw new GraphQLError("A planta não existe");
+
+            if(planta.idDono !== usuario.id) throw new GraphQLError("Usuário não autorizado");
+
+            const especie = await this.prismaService.especies.findFirst({where: {nome: planta.especie}});
+
+            if(!especie) throw new GraphQLError("A espécie da planta nao foi cadastrada no banco de dados");
+
+            const specie = this.specieMapper.reverseMapParametros(especie);
+
+            const registro = await this.prismaService.registros.findFirst({where: {idPlanta}, orderBy: {dataDeRegistro: 'desc'}});
+
+            if(!registro){
+                throw new GraphQLError("A planta não possui nenhum registro");
+            }
+
+            return { registro, specie };
+        }
+
+        else if(!idPlanta && idRegistro){
+            const registro = await this.prismaService.registros.findUnique({where: {id: idRegistro}});
+
+            if(!registro) throw new GraphQLError("Nenhum registro encontrado.")
+
+            const planta = await this.prismaService.plantas.findUnique({where: {id: registro.idPlanta}});
+
+            if(!planta) throw new GraphQLError("Nenhuma planta encontrada");
+
+            if(planta.idDono !== usuario.id) throw new GraphQLError("Usuário não autorizado");
+
+            const especie = await this.prismaService.especies.findFirst({where: {nome: planta.especie}});
+
+            if(!especie) throw new GraphQLError("Nenhuma espécie encontrada");
+
+            const specie = this.specieMapper.reverseMapParametros(especie);
+
+            return { registro, specie };
+        }
+    }
+
+    private gerarRelatorioDeSaude(registro: IRegistroPlanta, specie: Specie): IRelatorioSaude{
 
         const p = specie.parametros;
 
@@ -144,21 +177,13 @@ export class GetSaudeByIdService {
                 }
             }
 
-            let nitrogenio = avaliarSaude(Number(ultimoRegistro.nitrogenio), v.nitrogenio.min, v.nitrogenio.max, "nitrogênio");
-            let fosforo = avaliarSaude(Number(ultimoRegistro.fosforo), v.fosforo.min, v.fosforo.max, "fósforo");
-            let potassio = avaliarSaude(Number(ultimoRegistro.potassio), v.potassio.min, v.fosforo.max, "potássio");
-            let temperatura = avaliarSaude(Number(ultimoRegistro.temperatura), v.temperatura.min, v.temperatura.max, "temperatura");
-            let umidade = avaliarSaude(Number(ultimoRegistro.umidade), v.umidade.min, v.umidade.max, "umidade");
-            let pH = avaliarSaude(Number(ultimoRegistro.pH), v.pH.min, v.pH.max, "pH");
-            let luz = avaliarSaude(Number(ultimoRegistro.luz), v.luz.min, v.luz.max, "luz" );
-        
-            // let nitrogenio = avaliarSaude(Number(ultimoRegistro.nitrogenio), 50, 200, "nitrogênio");
-            // let fosforo = avaliarSaude(Number(ultimoRegistro.fosforo), 30, 75, "fósforo");
-            // let potassio = avaliarSaude(Number(ultimoRegistro.potassio), 200, 300, "potássio");
-            // let temperatura = avaliarSaude(Number(ultimoRegistro.temperatura), 10, 35, "temperatura");
-            // let umidade = avaliarSaude(Number(ultimoRegistro.umidade), 50, 70, "umidade");
-            // let pH = avaliarSaude(Number(ultimoRegistro.pH), 6, 7, "pH");
-            // let luz = avaliarSaude(Number(ultimoRegistro.luz),50, 101, "luz" );
+            let nitrogenio = avaliarSaude(Number(registro.nitrogenio), v.nitrogenio.min, v.nitrogenio.max, "nitrogênio");
+            let fosforo = avaliarSaude(Number(registro.fosforo), v.fosforo.min, v.fosforo.max, "fósforo");
+            let potassio = avaliarSaude(Number(registro.potassio), v.potassio.min, v.fosforo.max, "potássio");
+            let temperatura = avaliarSaude(Number(registro.temperatura), v.temperatura.min, v.temperatura.max, "temperatura");
+            let umidade = avaliarSaude(Number(registro.umidade), v.umidade.min, v.umidade.max, "umidade");
+            let pH = avaliarSaude(Number(registro.pH), v.pH.min, v.pH.max, "pH");
+            let luz = avaliarSaude(Number(registro.luz), v.luz.min, v.luz.max, "luz" );
         
             let estadoGeral = "Ruim";
             switch (pontuacao){
@@ -173,9 +198,10 @@ export class GetSaudeByIdService {
                 break;            
             } 
         
-            const ultimaAtualizacao = ultimoRegistro.dataDeRegistro;
+            const ultimaAtualizacao = registro.dataDeRegistro;
+            const { diagnostico, imagem } = registro
         
-            return { nitrogenio, fosforo, potassio, luz,  umidade, temperatura, pH, estadoGeral, ultimaAtualizacao, alertas };
+            return { nitrogenio, fosforo, potassio, luz,  umidade, temperatura, pH, estadoGeral, ultimaAtualizacao, alertas, diagnostico, imagem };
         };
         
     

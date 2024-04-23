@@ -12,7 +12,7 @@ import { GetUserProfile } from './use-cases/get-profile/get-profile.resolver';
   imports: [
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '7h', algorithm: 'HS256' },
+      signOptions: { expiresIn: '14d', algorithm: 'HS256' },
     }),
   ],
   providers: [

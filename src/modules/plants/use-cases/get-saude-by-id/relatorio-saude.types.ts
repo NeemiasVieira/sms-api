@@ -31,6 +31,12 @@ export class IRelatorioSaude {
 
     @Field(() => [String])
     alertas: string[];
+
+    @Field(() => String, {nullable: true})
+    imagem?: string;
+
+    @Field(() => String, {nullable: true})
+    diagnostico?: string;
 }
 
 export interface IRegistroPlanta {
@@ -44,4 +50,6 @@ export interface IRegistroPlanta {
     temperatura: string;
     pH: string;
     dataDeRegistro: Date;
+    diagnostico?: string;
+    imagem?: string;
 }

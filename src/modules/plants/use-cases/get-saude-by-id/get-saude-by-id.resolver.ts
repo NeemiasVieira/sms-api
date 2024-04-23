@@ -21,6 +21,6 @@ export class GetSaudeByIdResolver {
 
         if(!this.validationService.isObjectId(idPlanta)) throw new GraphQLError("ID da planta inválido");
 
-        return await this.getSaudeByIdService.getSaude(idPlanta, usuario);
+        return await this.getSaudeByIdService.getSaude(usuario, idPlanta);
     }
 }
