@@ -18,6 +18,8 @@ import { UpdateSolicitacaoRegistroResolver } from './use-cases/update-solicitaca
 import { UpdateSolicitacaoRegistroService } from './use-cases/update-solicitacao-registro/update-solicitacao-registro.service';
 import { GetSolicitacaoRegistroResolver } from './use-cases/get-solicitacao-registro/get-solicitacao-registro.resolver';
 import { GetSolicitacaoRegistroService } from './use-cases/get-solicitacao-registro/get-solicitacao-registro.service';
+import { GetPlantResolver } from './use-cases/get-plant/get-plant.resolver';
+import { GetPlantService } from './use-cases/get-plant/get-plant.service';
 
 @Module({
   imports: [JwtModule],
@@ -40,6 +42,8 @@ import { GetSolicitacaoRegistroService } from './use-cases/get-solicitacao-regis
     UpdateSolicitacaoRegistroService,
     GetSolicitacaoRegistroResolver,
     GetSolicitacaoRegistroService,
+    GetPlantResolver,
+    GetPlantService,
   ],
 })
 export class PlantsModule {}
