@@ -20,6 +20,7 @@ export class CreatePlantService {
         nome,
         especie,
         dataDaPlantacao,
+        solicitacaoNovoRegistro: 'nenhuma',
       },
     });
 

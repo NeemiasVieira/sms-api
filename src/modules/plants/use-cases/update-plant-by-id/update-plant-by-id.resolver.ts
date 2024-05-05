@@ -9,13 +9,12 @@ import { AuthUser } from 'src/decorators/authuser.decorator';
 
 @Resolver()
 export class UpdatePlantByIdResolver {
+  constructor(private readonly updatePlantByIdService: UpdatePlantByIdService) {}
 
-    constructor(private readonly updatePlantByIdService: UpdatePlantByIdService){}
-
-    @Mutation(() => Plant)
-    @UseGuards(AuthGuard)
-    async updatePlant(@Args() updatePlantArgs: IUpdatePlantArgs, @AuthUser() usuario: UserType): Promise<Plant>{
-        const {id, plantaAtualizada } = updatePlantArgs;
-        return await this.updatePlantByIdService.updatePlant(id, plantaAtualizada, usuario);
-    }
+  @Mutation(() => Plant)
+  @UseGuards(AuthGuard)
+  async updatePlant(@Args() updatePlantArgs: IUpdatePlantArgs, @AuthUser() usuario: UserType): Promise<Plant> {
+    const { id, plantaAtualizada } = updatePlantArgs;
+    return await this.updatePlantByIdService.updatePlant(id, plantaAtualizada, usuario);
+  }
 }

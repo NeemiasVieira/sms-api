@@ -14,9 +14,32 @@ import { PrismaService } from 'src/database/prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { SpecieMapper } from '../species/specie-mapper.service';
 import { GetSaudeByRecordIdResolver } from './use-cases/get-saude-by-record-id/get-saude-by-record-id.resolver';
+import { UpdateSolicitacaoRegistroResolver } from './use-cases/update-solicitacao-registro/update-solicitacao-registro.resolver';
+import { UpdateSolicitacaoRegistroService } from './use-cases/update-solicitacao-registro/update-solicitacao-registro.service';
+import { GetSolicitacaoRegistroResolver } from './use-cases/get-solicitacao-registro/get-solicitacao-registro.resolver';
+import { GetSolicitacaoRegistroService } from './use-cases/get-solicitacao-registro/get-solicitacao-registro.service';
 
 @Module({
   imports: [JwtModule],
-  providers: [CreatePlantResolver, CreatePlantService, DeletePlantByIdService, DeletePlantByIdResolver, GetPlantasByDonoIdResolver, GetPlantasByDonoIdService, GetSaudeByIdService, GetSaudeByIdResolver, UpdatePlantByIdService, UpdatePlantByIdResolver, ValidationsService, PrismaService, SpecieMapper, GetSaudeByRecordIdResolver]
+  providers: [
+    CreatePlantResolver,
+    CreatePlantService,
+    DeletePlantByIdService,
+    DeletePlantByIdResolver,
+    GetPlantasByDonoIdResolver,
+    GetPlantasByDonoIdService,
+    GetSaudeByIdService,
+    GetSaudeByIdResolver,
+    UpdatePlantByIdService,
+    UpdatePlantByIdResolver,
+    ValidationsService,
+    PrismaService,
+    SpecieMapper,
+    GetSaudeByRecordIdResolver,
+    UpdateSolicitacaoRegistroResolver,
+    UpdateSolicitacaoRegistroService,
+    GetSolicitacaoRegistroResolver,
+    GetSolicitacaoRegistroService,
+  ],
 })
 export class PlantsModule {}

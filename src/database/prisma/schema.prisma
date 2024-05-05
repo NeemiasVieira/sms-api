@@ -1,6 +1,13 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+enum StatusSolicitacao {
+  solicitado
+  aguardando
+  confirmado
+  nenhuma
+}
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -20,11 +27,12 @@ model users {
 }
 
 model plantas {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
-  idDono          String
-  nome            String
-  especie         String
-  dataDaPlantacao DateTime
+  id                      String            @id @default(auto()) @map("_id") @db.ObjectId
+  idDono                  String
+  nome                    String
+  especie                 String
+  dataDaPlantacao         DateTime
+  solicitacaoNovoRegistro StatusSolicitacao
 }
 
 model especies {
