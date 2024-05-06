@@ -14,9 +14,11 @@ import { PrismaService } from 'src/database/prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { GetAllRecordsPaginatedResolver } from './use-cases/get-all-records-paginated/get-all-records-paginated.resolver';
 import { GetAllRecordsPaginatedService } from './use-cases/get-all-records-paginated/get-all-records-paginated.service';
+import { GetRecordResolver } from './use-cases/get-record/get-record.resolver';
+import { GetRecordService } from './use-cases/get-record/get-record.service';
 
 @Module({
   imports: [JwtModule],
-  providers: [GetUltimoRegistroPlantaResolver, CreateRecordResolver, DeleteRecordByIdResolver, FindAllByPlantIdResolver, UpdateRecordByIdResolver, UpdateRecordByIdService, FindAllByPlantIdService, DeleteRecordByIdService, GetUltimoRegistroPlantaService, CreateRecordService, ValidationsService, PrismaService, GetAllRecordsPaginatedResolver, GetAllRecordsPaginatedService]
+  providers: [GetUltimoRegistroPlantaResolver, CreateRecordResolver, DeleteRecordByIdResolver, FindAllByPlantIdResolver, UpdateRecordByIdResolver, UpdateRecordByIdService, FindAllByPlantIdService, DeleteRecordByIdService, GetUltimoRegistroPlantaService, CreateRecordService, ValidationsService, PrismaService, GetAllRecordsPaginatedResolver, GetAllRecordsPaginatedService, GetRecordResolver, GetRecordService]
 })
 export class RecordsModule {}
