@@ -23,6 +23,13 @@ export class GetPlantService {
 
     if (planta.idDono !== usuario.id) throw new GraphQLError('Usuário não autorizado');
 
+    if (planta.solicitacaoNovoRegistro === 'confirmado') {
+      await this.prisma.plantas.update({
+        where: { id: idPlanta },
+        data: { solicitacaoNovoRegistro: 'nenhuma' },
+      });
+    }
+
     await this.prisma.$disconnect();
 
     return planta;
