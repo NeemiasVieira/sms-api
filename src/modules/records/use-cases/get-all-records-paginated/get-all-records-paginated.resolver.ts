@@ -8,14 +8,14 @@ import { AuthGuard } from 'src/middlewares/auth/auth';
 
 @Resolver()
 export class GetAllRecordsPaginatedResolver {
-
-  constructor(private readonly getAllRecordsPaginatedService: GetAllRecordsPaginatedService){}
+  constructor(private readonly getAllRecordsPaginatedService: GetAllRecordsPaginatedService) {}
 
   @UseGuards(AuthGuard)
   @Query(() => IGetAllRecordsPaginatedResponse)
-  async getAllRecordsPaginated(@Args() args: IGetAllRecordsPaginatedArgs, @AuthUser() usuario: UserType): Promise<IGetAllRecordsPaginatedResponse>{
+  async getAllRecordsPaginated(
+    @Args() args: IGetAllRecordsPaginatedArgs,
+    @AuthUser() usuario: UserType,
+  ): Promise<IGetAllRecordsPaginatedResponse> {
     return await this.getAllRecordsPaginatedService.get(args, usuario);
   }
 }
-
-

@@ -208,7 +208,7 @@ export class GetSaudeByIdService {
     const temperatura = avaliarSaude(Number(registro.temperatura), v.temperatura.min, v.temperatura.max, 'temperatura');
     const umidade = avaliarSaude(Number(registro.umidade), v.umidade.min, v.umidade.max, 'umidade');
     const pH = avaliarSaude(Number(registro.pH), v.pH.min, v.pH.max, 'pH');
-    const luz = avaliarSaude(Number(registro.luz), v.luz.min, v.luz.max, 'luz');
+    const luz = avaliarSaude(Number(registro.lux), v.luz.min, v.luz.max, 'luz');
 
     let estadoGeral = 'Ruim';
     switch (pontuacao) {

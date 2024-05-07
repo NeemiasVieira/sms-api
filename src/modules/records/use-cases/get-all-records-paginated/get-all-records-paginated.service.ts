@@ -1,26 +1,28 @@
-import { UserType } from "src/modules/users/user.type";
-import { IGetAllRecordsPaginatedArgs, IGetAllRecordsPaginatedResponse, RecordPaginated } from "./get-all-records-paginated.types";
-import { PrismaService } from "src/database/prisma/prisma.service";
-import { Injectable } from "@nestjs/common";
-import { GraphQLError } from "graphql";
+import { UserType } from 'src/modules/users/user.type';
+import {
+  IGetAllRecordsPaginatedArgs,
+  IGetAllRecordsPaginatedResponse,
+  RecordPaginated,
+} from './get-all-records-paginated.types';
+import { PrismaService } from 'src/database/prisma/prisma.service';
+import { Injectable } from '@nestjs/common';
+import { GraphQLError } from 'graphql';
 
 @Injectable()
 export class GetAllRecordsPaginatedService {
-
-  constructor(private readonly prisma: PrismaService){}
+  constructor(private readonly prisma: PrismaService) {}
 
   async get(args: IGetAllRecordsPaginatedArgs, usuario: UserType): Promise<IGetAllRecordsPaginatedResponse> {
-
     await this.prisma.$connect();
 
     const planta = await this.prisma.plantas.findUnique({ where: { id: args.idPlanta } });
 
     if (!planta) {
-      throw new GraphQLError("Planta não existe");
+      throw new GraphQLError('Planta não existe');
     }
 
     if (planta.idDono !== usuario.id) {
-      throw new GraphQLError("Usuário não autorizado");
+      throw new GraphQLError('Usuário não autorizado');
     }
 
     const { registrosPorPag, dataDeInicioBusca, dataDeFimBusca, idPlanta, pagina } = args;
@@ -29,12 +31,13 @@ export class GetAllRecordsPaginatedService {
     const registrosFromDB = await this.prisma.registros.findMany({
       where: {
         idPlanta,
-        ...(dataDeInicioBusca && dataDeFimBusca && {
-          dataDeRegistro: {
-            gte: dataDeInicioBusca.toISOString().substring(0, 10) + 'T00:00:00Z',
-            lt: new Date(dataDeFimBusca.toISOString().substring(0, 10) + 'T23:59:59Z'),
-          },
-        }),
+        ...(dataDeInicioBusca &&
+          dataDeFimBusca && {
+            dataDeRegistro: {
+              gte: dataDeInicioBusca.toISOString().substring(0, 10) + 'T00:00:00Z',
+              lt: new Date(dataDeFimBusca.toISOString().substring(0, 10) + 'T23:59:59Z'),
+            },
+          }),
       },
       orderBy: {
         dataDeRegistro: 'desc',
@@ -43,7 +46,10 @@ export class GetAllRecordsPaginatedService {
       take: registrosPorPag,
     });
 
-    const allRegistrosFromDB = await this.prisma.registros.findMany({ where: {idPlanta}, orderBy: {dataDeRegistro: "desc"}});
+    const allRegistrosFromDB = await this.prisma.registros.findMany({
+      where: { idPlanta },
+      orderBy: { dataDeRegistro: 'desc' },
+    });
 
     //Faz o calculo dinamico do nuRegistro
     const deParaMap = {};
@@ -55,12 +61,13 @@ export class GetAllRecordsPaginatedService {
     const totalRegistros = await this.prisma.registros.count({
       where: {
         idPlanta,
-        ...(dataDeInicioBusca && dataDeFimBusca && {
-          dataDeRegistro: {
-            gte: dataDeInicioBusca.toISOString().substring(0, 10) + 'T00:00:00Z',
-            lt: new Date(dataDeInicioBusca.toISOString().substring(0, 10) + 'T23:59:59Z'),
-          },
-        })
+        ...(dataDeInicioBusca &&
+          dataDeFimBusca && {
+            dataDeRegistro: {
+              gte: dataDeInicioBusca.toISOString().substring(0, 10) + 'T00:00:00Z',
+              lt: new Date(dataDeInicioBusca.toISOString().substring(0, 10) + 'T23:59:59Z'),
+            },
+          }),
       },
     });
 
@@ -71,13 +78,22 @@ export class GetAllRecordsPaginatedService {
 
     let totalRegistrosDaBusca: number;
 
-    if(dataDeInicioBusca && dataDeFimBusca) {
-      totalRegistrosDaBusca = await this.prisma.registros.count({where: {idPlanta, dataDeRegistro: {
-      gte: new Date(dataDeInicioBusca.toISOString().substring(0, 10) + 'T00:00:00Z'),
-      lt: new Date(dataDeFimBusca.toISOString().substring(0, 10) + 'T23:59:59Z'),
-    }}})};
+    if (dataDeInicioBusca && dataDeFimBusca) {
+      totalRegistrosDaBusca = await this.prisma.registros.count({
+        where: {
+          idPlanta,
+          dataDeRegistro: {
+            gte: new Date(dataDeInicioBusca.toISOString().substring(0, 10) + 'T00:00:00Z'),
+            lt: new Date(dataDeFimBusca.toISOString().substring(0, 10) + 'T23:59:59Z'),
+          },
+        },
+      });
+    }
 
-    const totalPaginas = dataDeInicioBusca && dataDeFimBusca ? Math.ceil(totalRegistrosDaBusca / registrosPorPag) : Math.ceil(totalRegistros / registrosPorPag);
+    const totalPaginas =
+      dataDeInicioBusca && dataDeFimBusca
+        ? Math.ceil(totalRegistrosDaBusca / registrosPorPag)
+        : Math.ceil(totalRegistros / registrosPorPag);
 
     await this.prisma.$disconnect();
 

@@ -4,10 +4,9 @@ import { UserType } from 'src/modules/users/user.type';
 
 @ArgsType()
 export class ICreateRecordArgs {
-
-  @Field((type) => UserType, {nullable: true})
+  @Field(() => UserType, { nullable: true })
   @IsObject()
-  usuario: UserType
+  usuario: UserType;
 
   @Field()
   @IsString()
@@ -46,15 +45,14 @@ export class ICreateRecordArgs {
 
   @Field()
   @IsString()
-  @IsNotEmpty({message: 'O campo luz é obrigatório'})
-  luz: string;
+  @IsNotEmpty({ message: 'O campo lux é obrigatório' })
+  lux: string;
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   @IsString()
   imagem?: string;
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   @IsString()
-  diagnostico?: string
-
+  diagnostico?: string;
 }

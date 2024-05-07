@@ -7,12 +7,11 @@ import { AuthUser } from 'src/decorators/authuser.decorator';
 
 @Resolver()
 export class DeleteRecordByIdResolver {
+  constructor(private readonly deleteRecordByIdService: DeleteRecordByIdService) {}
 
-    constructor(private readonly deleteRecordByIdService: DeleteRecordByIdService){}
-
-    @Mutation(() => String)
-    @UseGuards(AuthGuard)
-    async deleteRecord(@Args('id') id: string, @AuthUser() usuario: UserType): Promise<string>{
-        return await this.deleteRecordByIdService.deleteRecord(id, usuario);
-    }
+  @Mutation(() => String)
+  @UseGuards(AuthGuard)
+  async deleteRecord(@Args('id') id: string, @AuthUser() usuario: UserType): Promise<string> {
+    return await this.deleteRecordByIdService.deleteRecord(id, usuario);
+  }
 }

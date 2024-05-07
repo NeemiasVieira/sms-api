@@ -57,6 +57,7 @@ model especies {
 model registros {
   id             String   @id @default(auto()) @map("_id") @db.ObjectId
   idPlanta       String
+  nomeEspecie    String
   nitrogenio     String
   fosforo        String
   potassio       String
@@ -64,6 +65,7 @@ model registros {
   temperatura    String
   pH             String
   luz            String
+  lux            String
   dataDeRegistro DateTime
   imagem         String?
   diagnostico    String?
