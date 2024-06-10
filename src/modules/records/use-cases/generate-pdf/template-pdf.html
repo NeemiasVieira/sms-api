@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatório de Planta</title>
+  <style>
+      body {
+          font-family: Arial, sans-serif;
+          margin: 20px;
+      }
+      .header {
+          text-align: center;
+      }
+      .header img {
+          max-width: 100px;
+      }
+      .header h1 {
+          font-size: 24px;
+          margin: 10px 0;
+      }
+      .header h2 {
+          font-size: 18px;
+          color: #666;
+      }
+      .content {
+          margin-top: 20px;
+      }
+      .table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 20px;
+      }
+      .table, .table th, .table td {
+          border: 1px solid #ddd;
+      }
+      .table th, .table td {
+          padding: 8px;
+          text-align: left;
+      }
+      .table th {
+          background-color: #f4f4f4;
+      }
+      .comparison {
+          background-color: #e9e9e9;
+      }
+  </style>
+</head>
+<body>
+<div class="header">
+  <img src="logo.png" alt="Logo">
+  <h1>Relatório de Planta</h1>
+  <h2>Data do Registro: {{dataDeRegistro}}</h2>
+</div>
+<div class="content">
+  <h3>Nome do Usuário: {{usuario.nome}}</h3>
+  <h3>Dados da Planta</h3>
+  <p>Nome: {{planta.nome}}</p>
+  <p>Data de Plantação: {{planta.dataDePlantacao}}</p>
+  <h3>Comparação de Valores</h3>
+  <table class="table">
+    <tr>
+      <th>Parâmetro</th>
+      <th>Especie (Min)</th>
+      <th>Especie (Max)</th>
+      <th>Registro</th>
+    </tr>
+    <tr>
+      <td>Nitrogênio</td>
+      <td>{{especie.parametros.nitrogenio.min}}</td>
+      <td>{{especie.parametros.nitrogenio.max}}</td>
+      <td class="comparison">{{registro.nitrogenio}}</td>
+    </tr>
+    <tr>
+      <td>Fósforo</td>
+      <td>{{especie.parametros.fosforo.min}}</td>
+      <td>{{especie.parametros.fosforo.max}}</td>
+      <td class="comparison">{{registro.fosforo}}</td>
+    </tr>
+    <tr>
+      <td>Potássio</td>
+      <td>{{especie.parametros.potassio.min}}</td>
+      <td>{{especie.parametros.potassio.max}}</td>
+      <td class="comparison">{{registro.potassio}}</td>
+    </tr>
+    <tr>
+      <td>Luz</td>
+      <td>{{especie.parametros.luz.min}}</td>
+      <td>{{especie.parametros.luz.max}}</td>
+      <td class="comparison">{{registro.luz}}</td>
+    </tr>
+    <tr>
+      <td>Umidade</td>
+      <td>{{especie.parametros.umidade.min}}</td>
+      <td>{{especie.parametros.umidade.max}}</td>
+      <td class="comparison">{{registro.umidade}}</td>
+    </tr>
+    <tr>
+      <td>Temperatura</td>
+      <td>{{especie.parametros.temperatura.min}}</td>
+      <td>{{especie.parametros.temperatura.max}}</td>
+      <td class="comparison">{{registro.temperatura}}</td>
+    </tr>
+    <tr>
+      <td>pH</td>
+      <td>{{especie.parametros.pH.min}}</td>
+      <td>{{especie.parametros.pH.max}}</td>
+      <td class="comparison">{{registro.pH}}</td>
+    </tr>
+  </table>
+  <h3>Identificadores</h3>
+  <table class="table">
+    <tr>
+      <th>Entidade</th>
+      <th>ID</th>
+    </tr>
+    <tr>
+      <td>Usuário</td>
+      <td>{{usuario.id}}</td>
+    </tr>
+    <tr>
+      <td>Planta</td>
+      <td>{{planta.id}}</td>
+    </tr>
+    <tr>
+      <td>Espécie</td>
+      <td>{{especie.id}}</td>
+    </tr>
+    <tr>
+      <td>Registro</td>
+      <td>{{registro.id}}</td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>

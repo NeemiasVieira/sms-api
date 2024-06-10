@@ -16,9 +16,32 @@ import { GetAllRecordsPaginatedResolver } from './use-cases/get-all-records-pagi
 import { GetAllRecordsPaginatedService } from './use-cases/get-all-records-paginated/get-all-records-paginated.service';
 import { GetRecordResolver } from './use-cases/get-record/get-record.resolver';
 import { GetRecordService } from './use-cases/get-record/get-record.service';
+import { GeneratePdfResolver } from './use-cases/generate-pdf/generate-pdf.resolver';
+import { GeneratePdfService } from './use-cases/generate-pdf/generate-pdf.service';
+import { SpecieMapper } from '../species/specie-mapper.service';
 
 @Module({
   imports: [JwtModule],
-  providers: [GetUltimoRegistroPlantaResolver, CreateRecordResolver, DeleteRecordByIdResolver, FindAllByPlantIdResolver, UpdateRecordByIdResolver, UpdateRecordByIdService, FindAllByPlantIdService, DeleteRecordByIdService, GetUltimoRegistroPlantaService, CreateRecordService, ValidationsService, PrismaService, GetAllRecordsPaginatedResolver, GetAllRecordsPaginatedService, GetRecordResolver, GetRecordService]
+  providers: [
+    GetUltimoRegistroPlantaResolver,
+    CreateRecordResolver,
+    DeleteRecordByIdResolver,
+    FindAllByPlantIdResolver,
+    UpdateRecordByIdResolver,
+    UpdateRecordByIdService,
+    FindAllByPlantIdService,
+    DeleteRecordByIdService,
+    GetUltimoRegistroPlantaService,
+    CreateRecordService,
+    ValidationsService,
+    PrismaService,
+    GetAllRecordsPaginatedResolver,
+    GetAllRecordsPaginatedService,
+    GetRecordResolver,
+    GetRecordService,
+    GeneratePdfResolver,
+    GeneratePdfService,
+    SpecieMapper,
+  ],
 })
 export class RecordsModule {}

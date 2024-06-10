@@ -1,6 +1,6 @@
 {
   "name": "sms-api",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "",
   "author": "",
   "private": true,
@@ -36,6 +36,7 @@
     "class-validator": "^0.14.1",
     "dotenv": "^16.4.1",
     "graphql": "^16.8.1",
+    "html-pdf": "^3.0.1",
     "mongoose": "^8.1.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
