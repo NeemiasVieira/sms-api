@@ -118,13 +118,13 @@ export class GeneratePdfService {
 
     const html = this.generateHtml(values);
 
-    const pdfPath = path.join(__dirname, 'report.pdf');
-    pdf.create(html).toFile(pdfPath, (err, res) => {
-      if (err) return console.log(err);
-      console.log(res); // { filename: '/app/report.pdf' }
+    return new Promise((resolve, reject) => {
+      pdf.create(html).toBuffer((err, buffer) => {
+        if (err) return reject(err);
+        const base64 = buffer.toString('base64');
+        resolve(base64);
+      });
     });
-
-    return 'PDF gerado com sucesso';
   }
 
   private generateHtml(values: valoresPDF): string {
