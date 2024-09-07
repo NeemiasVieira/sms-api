@@ -1,7 +1,7 @@
-import { ObjectType, Field, InputType, ArgsType } from '@nestjs/graphql';
+import { ObjectType, Field } from "@nestjs/graphql";
 
 @ObjectType()
-class Parametro{
+class Parametro {
   @Field()
   min: string;
   @Field()
@@ -9,38 +9,34 @@ class Parametro{
 }
 
 @ObjectType()
-class Parametros{
-  @Field((type) => Parametro)
+class Parametros {
+  @Field(() => Parametro)
   nitrogenio: Parametro;
-  @Field((type) => Parametro)
+  @Field(() => Parametro)
   fosforo: Parametro;
-  @Field((type) => Parametro)
+  @Field(() => Parametro)
   potassio: Parametro;
-  @Field((type) => Parametro)
+  @Field(() => Parametro)
   luz: Parametro;
-  @Field((type) => Parametro)
+  @Field(() => Parametro)
   umidade: Parametro;
-  @Field((type) => Parametro)
+  @Field(() => Parametro)
   temperatura: Parametro;
-  @Field((type) => Parametro)
+  @Field(() => Parametro)
   pH: Parametro;
 }
 
 @ObjectType()
 export class Specie {
-
   @Field()
   id: string;
 
   @Field()
-  nome: string
+  nome: string;
 
   @Field()
   descricao: string;
 
-  @Field((type) => Parametros)
+  @Field(() => Parametros)
   parametros: Parametros;
 }
-
-
-

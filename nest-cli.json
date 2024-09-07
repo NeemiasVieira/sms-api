@@ -8,6 +8,10 @@
       {
         "include": "**/*.html",
         "outDir": "dist"
+      },
+      {
+        "include": "**/*.css",
+        "outDir": "dist"
       }
     ]
   }
