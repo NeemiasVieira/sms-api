@@ -4,72 +4,10 @@ import { PrismaService } from "../../../../database/prisma/prisma.service";
 import { GraphQLError } from "graphql";
 import { SpecieMapper } from "../../../species/specie-mapper.service";
 import { FormatarDatas } from "../../../../utils/FormatarDatas";
-import * as pdf from "html-pdf";
 import * as fs from "fs";
 import * as path from "path";
-
-interface valoresPDF {
-  usuario: {
-    id: string;
-    nome: string;
-  };
-  planta: {
-    nome: string;
-    id: string;
-    dataDePlantacao: string;
-  };
-  especie: {
-    id: string;
-    nome: string;
-    descricao: string;
-    parametros: {
-      nitrogenio: {
-        min: string;
-        max: string;
-      };
-      fosforo: {
-        min: string;
-        max: string;
-      };
-      potassio: {
-        min: string;
-        max: string;
-      };
-      luz: {
-        min: string;
-        max: string;
-      };
-      umidade: {
-        min: string;
-        max: string;
-      };
-      temperatura: {
-        min: string;
-        max: string;
-      };
-      pH: {
-        min: string;
-        max: string;
-      };
-    };
-  };
-  registro: {
-    id: string;
-    idPlanta: string;
-    nomeEspecie: string;
-    nitrogenio: string;
-    fosforo: string;
-    potassio: string;
-    umidade: string;
-    temperatura: string;
-    pH: string;
-    luz: string;
-    lux: string;
-    dataDeRegistro: string;
-    imagem: string;
-    diagnostico: string;
-  };
-}
+import * as puppeteer from "puppeteer";
+import { valoresPDF } from "./contract";
 
 @Injectable()
 export class GeneratePdfService {
@@ -106,7 +44,7 @@ export class GeneratePdfService {
       },
       registro: {
         ...recordData,
-        dataDeRegistro: FormatarDatas.completao(String(dataDeRegistro)),
+        dataDeRegistro: FormatarDatas.completao(String(FormatarDatas.formatGMT(dataDeRegistro))),
       },
       especie,
       planta: {
@@ -118,13 +56,31 @@ export class GeneratePdfService {
 
     const html = this.generateHtml(values);
 
-    return new Promise((resolve, reject) => {
-      pdf.create(html).toBuffer((err, buffer) => {
-        if (err) return reject(err);
-        const base64 = buffer.toString("base64");
-        resolve(base64);
+    return this.generatePdf(html);
+  }
+
+  private async generatePdf(html: string): Promise<string> {
+    try {
+      const browserOptions =
+        process.platform === "linux"
+          ? { headless: true, defaultViewport: null, executablePath: "/usr/bin/google-chrome", args: ["--no-sandbox"] }
+          : {};
+      const browser = await puppeteer.launch(browserOptions);
+      const page = await browser.newPage();
+      await page.setContent(html);
+
+      const buffer = await page.pdf({
+        format: "A4",
+        printBackground: true,
       });
-    });
+
+      await browser.close();
+
+      return Buffer.from(buffer).toString("base64");
+    } catch (error) {
+      console.log("Erro inesperado ao gerar o PDF: ", error);
+      throw new GraphQLError("Erro inesperado ao gerar o PDF");
+    }
   }
 
   private generateHtml(values: valoresPDF): string {

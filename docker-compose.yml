@@ -17,4 +17,5 @@ services:
       DATABASE_URL: ${DATABASE_URL} 
       JWT_SECRET: ${JWT_SECRET}
       PASSWORD_SALT: ${PASSWORD_SALT}
+      NODE_ENV: production
     env_file: .env

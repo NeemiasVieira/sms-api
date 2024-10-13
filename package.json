@@ -1,6 +1,6 @@
 {
   "name": "sms-api",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "description": "",
   "author": "",
   "private": true,
@@ -34,7 +34,7 @@
     "class-validator": "^0.14.1",
     "dotenv": "^16.4.5",
     "graphql": "^16.9.0",
-    "html-pdf": "^3.0.1",
+    "puppeteer": "^23.5.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
