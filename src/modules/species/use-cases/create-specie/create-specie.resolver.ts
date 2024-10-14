@@ -1,35 +1,50 @@
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { Specie } from '../../specie.type';
-import { CreateSpecieArgs } from './create-specie.args';
-import { PrismaService } from 'src/database/prisma/prisma.service';
-import { SpecieMapper } from '../../specie-mapper.service';
-import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from 'src/middlewares/auth/auth';
-import { IsAdmin } from 'src/decorators/admin.decorator';
-import { GraphQLError } from 'graphql';
+import { UseGuards } from "@nestjs/common";
+import { Args, Mutation, Resolver } from "@nestjs/graphql";
+import { GraphQLError } from "graphql";
+import { PrismaService } from "src/database/prisma/prisma.service";
+import { IsAdmin } from "src/decorators/admin.decorator";
+import { AuthGuard } from "src/middlewares/auth/auth";
+import { SpecieMapper } from "../../specie-mapper.service";
+import { Specie } from "../../specie.type";
+import { CreateSpecieArgs } from "./create-specie.args";
 
 @Resolver()
 export class CreateSpecieResolver {
-
-  constructor(private readonly prismaService: PrismaService, private readonly specieMapper: SpecieMapper) {} 
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly specieMapper: SpecieMapper,
+  ) {}
   @UseGuards(AuthGuard)
   @Mutation(() => Specie)
-  async createSpecie(@Args() args: CreateSpecieArgs, @IsAdmin() isAdmin: boolean): Promise<Specie>{
+  async createSpecie(
+    @Args() args: CreateSpecieArgs,
+    @IsAdmin() isAdmin: boolean,
+  ): Promise<Specie> {
+    const { simulado } = args;
 
-    if(!isAdmin) throw new GraphQLError("Usuário sem permissao de modificaçao");
+    if (!isAdmin && !simulado)
+      throw new GraphQLError("Usuário não autorizado!");
 
     await this.prismaService.$connect();
 
     const { parametros, ...data } = args;
 
-    const especieExiste = await this.prismaService.especies.findFirst({where: {nome: args.nome}});
+    const especieExiste = await this.prismaService.especies.findFirst({
+      where: { nome: args.nome, dataDeExclusao: null },
+    });
 
-    if(especieExiste) throw new GraphQLError("Essa espécie já foi cadastrada no sistema");
+    if (especieExiste)
+      throw new GraphQLError("Essa espécie já foi cadastrada no sistema");
 
-    const novaEspecie = await this.prismaService.especies.create({ data: {
-      ...data,
-      ...this.specieMapper.mapParametros(parametros)
-    }});
+    const novaEspecie = await this.prismaService.especies.create({
+      data: {
+        ...data,
+        ...this.specieMapper.mapParametros(parametros),
+        dataDeExclusao: null,
+        simulado: simulado ?? false,
+        criadoPor: null,
+      },
+    });
 
     await this.prismaService.$disconnect();
 

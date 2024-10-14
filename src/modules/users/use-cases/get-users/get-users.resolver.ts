@@ -3,26 +3,25 @@ import { PrismaService } from "src/database/prisma/prisma.service";
 import { User } from "src/modules/users/user.type";
 
 @Resolver()
-export class GetUsersResolver{
+export class GetUsersResolver {
+  constructor(private readonly prismaService: PrismaService) {}
 
-    constructor(private readonly prismaService: PrismaService){}
+  @Query(() => [User])
+  async getUsers(): Promise<User[]> {
+    await this.prismaService.$connect();
 
-    @Query(() => [User])
-    async getUsers(): Promise<User[]>{
+    const allUsers = await this.prismaService.users.findMany({
+      where: { dataDeExclusao: null },
+    });
 
-        await this.prismaService.$connect();
+    allUsers.forEach((user) => {
+      user.email = "informaçao confidencial";
+      user.id = "informação confidencial";
+      user.senha = "informação confidencial e criptografada";
+    });
 
-        const allUsers = await this.prismaService.users.findMany();
+    await this.prismaService.$disconnect();
 
-        allUsers.forEach((user) => {
-            user.email = "informaçao confidencial";
-            user.id = "informação confidencial"
-            user.senha = "informação confidencial e criptografada"
-        })
-
-        await this.prismaService.$disconnect();
-
-        return allUsers;
-    }
-
+    return allUsers;
+  }
 }

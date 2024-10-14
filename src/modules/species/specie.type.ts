@@ -1,4 +1,4 @@
-import { ObjectType, Field } from "@nestjs/graphql";
+import { Field, ObjectType } from "@nestjs/graphql";
 
 @ObjectType()
 class Parametro {
@@ -39,4 +39,13 @@ export class Specie {
 
   @Field(() => Parametros)
   parametros: Parametros;
+
+  @Field()
+  simulado?: boolean;
+
+  @Field()
+  dataDeExclusao?: Date;
+
+  @Field()
+  criadoPor?: string;
 }

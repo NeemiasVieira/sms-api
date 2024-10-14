@@ -1,5 +1,5 @@
-import { Field, ArgsType } from "@nestjs/graphql";
-import { IsNotEmpty, IsString } from "class-validator";
+import { ArgsType, Field } from "@nestjs/graphql";
+import { IsBoolean, IsNotEmpty, IsString } from "class-validator";
 import { UserType } from "src/modules/users/user.type";
 
 @ArgsType()
@@ -16,5 +16,9 @@ export class CreatePlantArgs {
   @IsString()
   @IsNotEmpty({ message: "O campo especie é obrigatório" })
   @Field()
-  especie: string;
+  idEspecie: string;
+
+  @IsBoolean()
+  @Field()
+  simulado?: boolean;
 }

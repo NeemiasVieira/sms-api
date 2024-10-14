@@ -1,19 +1,24 @@
-import { Injectable } from '@nestjs/common';
-import { ICreateRecordArgs } from './create-records.args';
-import { Record } from '../../record.type';
-import { PrismaService } from 'src/database/prisma/prisma.service';
-import { GraphQLError } from 'graphql';
+import { Injectable } from "@nestjs/common";
+import { GraphQLError } from "graphql";
+import { PrismaService } from "src/database/prisma/prisma.service";
+import { Record } from "../../record.type";
+import { ICreateRecordArgs } from "./create-records.args";
 
 const arredondar = (numero: number) => {
   const fator = 10 ** 2;
   return Math.round(numero * fator) / fator;
 };
 
-export const calcularPorcentagemDeLuz = (valor: number, maxEspecie: number): string => {
+export const calcularPorcentagemDeLuz = (
+  valor: number,
+  maxEspecie: number,
+): string => {
   if (valor > maxEspecie) {
-    return '100';
+    return "100";
   }
-  const porcentagem = arredondar(Number(((valor / maxEspecie) * 100).toFixed(7)));
+  const porcentagem = arredondar(
+    Number(((valor / maxEspecie) * 100).toFixed(7)),
+  );
 
   return String(porcentagem);
 };
@@ -30,20 +35,47 @@ export class CreateRecordService {
 
     const dataDeRegistro = new Date();
 
-    const planta = await this.prismaService.plantas.findUnique({ where: { id: idPlanta } });
+    const planta = await this.prismaService.plantas.findUnique({
+      where: { id: idPlanta, dataDeExclusao: null },
+    });
 
-    if (planta.idDono !== usuario.id) throw new GraphQLError('Usuário não autorizado');
+    if (planta.idDono !== usuario.id)
+      throw new GraphQLError("Usuário não autorizado");
 
-    const especie = await this.prismaService.especies.findFirst({ where: { nome: planta.especie } });
+    if (dados.simulado && !planta.simulado) {
+      throw new GraphQLError(
+        "Um registro simulado só pode ser criado em uma planta simulada.",
+      );
+    }
 
-    if (!especie) throw new GraphQLError('Espécie nao encontrada');
+    if (planta.simulado && !dados.simulado) {
+      throw new GraphQLError(
+        "Um registro real só pode ser criado em uma planta configurada como não simulada.",
+      );
+    }
 
-    const luz = calcularPorcentagemDeLuz(Number(dados.lux), Number(especie.maxLuz));
+    const especie = await this.prismaService.especies.findFirst({
+      where: { nome: planta.especie, dataDeExclusao: null },
+    });
+
+    if (!especie) throw new GraphQLError("Espécie nao encontrada");
+
+    const luz = calcularPorcentagemDeLuz(
+      Number(dados.lux),
+      Number(especie.maxLuz),
+    );
+
+    const totalRegistros = await this.prismaService.registros.count({
+      where: { idPlanta },
+    });
 
     const novoRegistro = this.prismaService.registros.create({
       data: {
         ...dados,
+        dataDeExclusao: null,
+        simulado: dados.simulado ?? null,
         nomeEspecie: especie.nome,
+        nuRegistro: totalRegistros + 1,
         luz,
         dataDeRegistro,
       },

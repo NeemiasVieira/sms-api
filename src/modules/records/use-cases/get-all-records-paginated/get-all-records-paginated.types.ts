@@ -1,16 +1,16 @@
-import { ArgsType, Field, ObjectType } from '@nestjs/graphql';
-import { IsDateString, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { ArgsType, Field, ObjectType } from "@nestjs/graphql";
+import { IsDateString, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 @ArgsType()
 export class IGetAllRecordsPaginatedArgs {
   @Field()
   @IsString()
-  @IsNotEmpty({ message: 'O campo idPlanta é obrigatório' })
+  @IsNotEmpty({ message: "O campo idPlanta é obrigatório" })
   idPlanta: string;
 
   @Field()
-  @IsNotEmpty({ message: 'O campo registrosPorPag é obrigatório' })
-  @IsNumber({}, { message: 'O campo registrosPorPag precisa ser um número' })
+  @IsNotEmpty({ message: "O campo registrosPorPag é obrigatório" })
+  @IsNumber({}, { message: "O campo registrosPorPag precisa ser um número" })
   registrosPorPag: number;
 
   @Field({ nullable: true })
@@ -22,8 +22,8 @@ export class IGetAllRecordsPaginatedArgs {
   dataDeFimBusca?: Date;
 
   @Field()
-  @IsNumber({}, { message: 'A propriedade pagina deve ser um número' })
-  @IsNotEmpty({ message: 'A propriedade pagina é obrigatória' })
+  @IsNumber({}, { message: "A propriedade pagina deve ser um número" })
+  @IsNotEmpty({ message: "A propriedade pagina é obrigatória" })
   pagina: number;
 }
 
@@ -69,4 +69,6 @@ export class IGetAllRecordsPaginatedResponse {
   pagina: number;
   @Field()
   totalPaginas: number;
+  @Field()
+  totalResultados: number;
 }

@@ -1,5 +1,5 @@
-import { Mutation, Resolver } from '@nestjs/graphql';
-import { PrismaService } from 'src/database/prisma/prisma.service';
+import { Mutation, Resolver } from "@nestjs/graphql";
+import { PrismaService } from "src/database/prisma/prisma.service";
 
 @Resolver()
 export class ExecuteOneTimeResolver {
@@ -13,6 +13,6 @@ export class ExecuteOneTimeResolver {
 
     await this.prismaService.$disconnect();
 
-    return 'Executado com sucesso.';
+    return "Executado com sucesso.";
   }
 }

@@ -1,6 +1,6 @@
-import { ObjectType, Field } from '@nestjs/graphql';
+import { Field, ObjectType } from "@nestjs/graphql";
 
-export type ISolicitacaoNovoRegistro = 'aguardando' | 'confirmado' | 'nenhuma';
+export type ISolicitacaoNovoRegistro = "aguardando" | "confirmado" | "nenhuma";
 
 @ObjectType()
 export class Plant {
@@ -21,4 +21,16 @@ export class Plant {
 
   @Field()
   solicitacaoNovoRegistro: ISolicitacaoNovoRegistro;
+
+  @Field()
+  ultimaAtualizacao?: Date;
+
+  @Field()
+  simulado?: boolean;
+
+  @Field()
+  dataDeExclusao?: Date;
+
+  @Field()
+  idEspecie: string;
 }
