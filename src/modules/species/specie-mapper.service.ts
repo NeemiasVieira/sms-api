@@ -1,9 +1,9 @@
-import { Injectable } from "@nestjs/common";
-import { CreateSpecieArgs } from "./use-cases/create-specie/create-specie.args";
-import { UpdateSpecieArgs } from "./use-cases/update-specie/update-specie.args";
+import { Injectable } from '@nestjs/common';
+import { CreateSpecieArgs } from './use-cases/create-specie/create-specie.args';
+import { UpdateSpecieArgs } from './use-cases/update-specie/update-specie.args';
 
 interface Specie {
-  id?: string;
+  id: string;
   nome: string;
   descricao: string;
   minNitrogenio: string;
@@ -20,6 +20,9 @@ interface Specie {
   maxUmidade: string;
   maxTemperatura: string;
   maxPh: string;
+  simulado: boolean;
+  criadoPor: string;
+  dataDeExclusao: Date;
 }
 
 interface Parametro {
@@ -38,9 +41,8 @@ interface Parametros {
 }
 
 @Injectable()
-export class SpecieMapper{
+export class SpecieMapper {
   public mapParametros(parametros: CreateSpecieArgs['parametros'] | UpdateSpecieArgs['parametros']) {
-
     const { nitrogenio, fosforo, potassio, luz, umidade, temperatura, pH } = parametros;
 
     return {
@@ -57,22 +59,39 @@ export class SpecieMapper{
       maxLuz: luz.max,
       maxUmidade: umidade.max,
       maxTemperatura: temperatura.max,
-      maxPh: pH.max
+      maxPh: pH.max,
     };
   }
 
-  public reverseMapParametros(specie: Specie): { id: string, nome: string; descricao: string; parametros: Parametros } {
+  public reverseMapParametros(specie: Specie): { id: string; nome: string; descricao: string; parametros: Parametros } {
+    const {
+      minNitrogenio,
+      maxNitrogenio,
+      minFosforo,
+      maxFosforo,
+      minPotassio,
+      maxPotassio,
+      minLuz,
+      maxLuz,
+      minPh,
+      maxPh,
+      minTemperatura,
+      maxTemperatura,
+      minUmidade,
+      maxUmidade,
+      ...rest
+    } = specie;
+
     const parametros: Parametros = {
-      nitrogenio: { min: specie.minNitrogenio, max: specie.maxNitrogenio },
-      fosforo: { min: specie.minFosforo, max: specie.maxFosforo },
-      potassio: { min: specie.minPotassio, max: specie.maxPotassio },
-      luz: { min: specie.minLuz, max: specie.maxLuz },
-      umidade: { min: specie.minUmidade, max: specie.maxUmidade },
-      temperatura: { min: specie.minTemperatura, max: specie.maxTemperatura },
-      pH: { min: specie.minPh, max: specie.maxPh }
+      nitrogenio: { min: minNitrogenio, max: maxNitrogenio },
+      fosforo: { min: minFosforo, max: maxFosforo },
+      potassio: { min: minPotassio, max: maxPotassio },
+      luz: { min: minLuz, max: maxLuz },
+      umidade: { min: minUmidade, max: maxUmidade },
+      temperatura: { min: minTemperatura, max: maxTemperatura },
+      pH: { min: minPh, max: maxPh },
     };
-  
-    return { id: specie.id, nome: specie.nome, descricao: specie.descricao, parametros };
+
+    return { parametros, ...rest };
   }
-  
 }

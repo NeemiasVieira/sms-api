@@ -1,8 +1,8 @@
-import { Injectable } from "@nestjs/common";
-import { GraphQLError } from "graphql";
-import { PrismaService } from "src/database/prisma/prisma.service";
-import { UserType } from "src/modules/users/user.type";
-import { Record } from "../../record.type";
+import { Injectable } from '@nestjs/common';
+import { GraphQLError } from 'graphql';
+import { PrismaService } from 'src/database/prisma/prisma.service';
+import { UserType } from 'src/modules/users/user.type';
+import { Record } from '../../record.type';
 
 @Injectable()
 export class GetUltimoRegistroPlantaService {
@@ -15,14 +15,13 @@ export class GetUltimoRegistroPlantaService {
       where: { id, dataDeExclusao: null },
     });
 
-    if (!plantaExiste) throw new GraphQLError("Planta não encontrada");
+    if (!plantaExiste) throw new GraphQLError('Planta não encontrada');
 
-    if (plantaExiste.idDono !== usuario.id)
-      throw new GraphQLError("Usuário não autorizado");
+    if (plantaExiste.idDono !== usuario.id) throw new GraphQLError('Usuário não autorizado');
 
     const ultimoRegistro = await this.prismaService.registros.findFirst({
       where: { idPlanta: id, dataDeExclusao: null },
-      orderBy: { dataDeRegistro: "desc" },
+      orderBy: { dataDeRegistro: 'desc' },
     });
 
     await this.prismaService.$disconnect();
