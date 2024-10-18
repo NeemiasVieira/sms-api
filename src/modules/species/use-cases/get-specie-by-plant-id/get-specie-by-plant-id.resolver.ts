@@ -8,7 +8,7 @@ export class GetSpecieByPlantIdResolver {
   constructor(private readonly prismaService: PrismaService) {}
 
   @Query(() => Specie, { nullable: true })
-  async getSpecieByPlantId(@Args() idPlanta: string) {
+  async getSpecieByPlantId(@Args('idPlanta') idPlanta: string) {
     if (!idPlanta) {
       throw new GraphQLError('O campo idPlanta é obrigatório para essa consulta');
     }
