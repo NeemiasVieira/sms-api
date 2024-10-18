@@ -8,12 +8,11 @@ import { AuthUser } from 'src/decorators/authuser.decorator';
 
 @Resolver()
 export class GetUltimoRegistroPlantaResolver {
+  constructor(private readonly getUltimoRegistroPlantaService: GetUltimoRegistroPlantaService) {}
 
-    constructor(private readonly getUltimoRegistroPlantaService: GetUltimoRegistroPlantaService){}
-
-    @Query(() => Record)
-    @UseGuards(AuthGuard)
-    async getLastRecordByPlant(@Args('idPlanta') idPlanta: string, @AuthUser() usuario: UserType): Promise<Record>{
-        return await this.getUltimoRegistroPlantaService.getRecord(idPlanta, usuario);
-    }
+  @Query(() => Record, { nullable: true })
+  @UseGuards(AuthGuard)
+  async getLastRecordByPlant(@Args('idPlanta') idPlanta: string, @AuthUser() usuario: UserType): Promise<Record> {
+    return await this.getUltimoRegistroPlantaService.getRecord(idPlanta, usuario);
+  }
 }

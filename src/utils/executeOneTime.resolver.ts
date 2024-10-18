@@ -1,5 +1,5 @@
-import { Mutation, Resolver } from "@nestjs/graphql";
-import { PrismaService } from "src/database/prisma/prisma.service";
+import { Mutation, Resolver } from '@nestjs/graphql';
+import { PrismaService } from 'src/database/prisma/prisma.service';
 
 @Resolver()
 export class ExecuteOneTimeResolver {
@@ -9,10 +9,22 @@ export class ExecuteOneTimeResolver {
   async executeOneTime() {
     await this.prismaService.$connect();
 
-    // Executar a acao aqui
+    const registros = await this.prismaService.registros.findMany();
+
+    registros.forEach(async (registro) => {
+      const especie = await this.prismaService.especies.findFirst({ where: { nome: registro.nomeEspecie } });
+      await this.prismaService.registros.update({
+        where: {
+          id: registro.id,
+        },
+        data: {
+          idEspecie: especie.id,
+        },
+      });
+    });
 
     await this.prismaService.$disconnect();
 
-    return "Executado com sucesso.";
+    return 'Executado com sucesso.';
   }
 }

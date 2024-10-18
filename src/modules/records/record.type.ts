@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, ObjectType } from '@nestjs/graphql';
 @ObjectType()
 export class Record {
   @Field()
@@ -21,6 +21,8 @@ export class Record {
   luz: string;
   @Field()
   lux: string;
+  @Field()
+  idEspecie: string;
   @Field()
   nomeEspecie: string;
   @Field()
