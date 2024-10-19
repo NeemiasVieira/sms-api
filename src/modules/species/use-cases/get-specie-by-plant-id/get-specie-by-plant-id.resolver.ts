@@ -2,10 +2,14 @@ import { Args, Query, Resolver } from '@nestjs/graphql';
 import { Specie } from '../../specie.type';
 import { GraphQLError } from 'graphql';
 import { PrismaService } from 'src/database/prisma/prisma.service';
+import { SpecieMapper } from '../../specie-mapper.service';
 
 @Resolver()
 export class GetSpecieByPlantIdResolver {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly specieMapper: SpecieMapper
+  ) {}
 
   @Query(() => Specie, { nullable: true })
   async getSpecieByPlantId(@Args('idPlanta') idPlanta: string) {
@@ -27,6 +31,6 @@ export class GetSpecieByPlantIdResolver {
       },
     });
 
-    return especie;
+    return this.specieMapper.reverseMapParametros(especie);
   }
 }

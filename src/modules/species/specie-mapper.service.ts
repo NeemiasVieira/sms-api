@@ -63,7 +63,11 @@ export class SpecieMapper {
     };
   }
 
-  public reverseMapParametros(specie: Specie): { id: string; nome: string; descricao: string; parametros: Parametros } {
+  public reverseMapParametros(
+    specie: Specie
+  ): { id: string; nome: string; descricao: string; parametros: Parametros } | null {
+    if (!specie) return null;
+
     const {
       minNitrogenio,
       maxNitrogenio,
