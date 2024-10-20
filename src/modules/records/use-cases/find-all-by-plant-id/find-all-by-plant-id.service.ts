@@ -1,22 +1,23 @@
-import { Injectable } from "@nestjs/common";
-import { GraphQLError } from "graphql";
-import { PrismaService } from "src/database/prisma/prisma.service";
-import { ValidationsService } from "src/utils/validations.service";
-import { Record } from "../../record.type";
-import { IFindAllByPlantIdArgs } from "./find-all-by-plant-id.types";
+import { Injectable } from '@nestjs/common';
+import { GraphQLError } from 'graphql';
+import { PrismaService } from 'src/database/prisma/prisma.service';
+import { ValidationsService } from 'src/utils/validations.service';
+import { Record } from '../../record.type';
+import { IFindAllByPlantIdArgs } from './find-all-by-plant-id.types';
+import { UserType } from 'src/modules/users/user.type';
 
 @Injectable()
 export class FindAllByPlantIdService {
   constructor(
     private readonly validationsService: ValidationsService,
-    private readonly prismaService: PrismaService,
+    private readonly prismaService: PrismaService
   ) {}
 
-  async getAll(args: IFindAllByPlantIdArgs): Promise<Record[]> {
-    const { idPlanta, intervaloDeBusca, usuario } = args;
+  async getAll(args: IFindAllByPlantIdArgs, usuario: UserType): Promise<Record[]> {
+    const { idPlanta, intervaloDeBusca } = args;
 
     if (!this.validationsService.isObjectId(idPlanta)) {
-      throw new GraphQLError("ID da planta é inválido");
+      throw new GraphQLError('ID da planta é inválido');
     }
 
     await this.prismaService.$connect();
@@ -26,17 +27,16 @@ export class FindAllByPlantIdService {
     });
 
     if (!plantaExiste) {
-      throw new GraphQLError("A planta não existe no banco de dados");
+      throw new GraphQLError('A planta não existe no banco de dados');
     }
 
-    if (plantaExiste.idDono !== usuario.id)
-      throw new GraphQLError("Usuário não autorizado");
+    if (plantaExiste.idDono !== usuario.id) throw new GraphQLError('Usuário não autorizado');
 
     if (!intervaloDeBusca) {
       const registros = await this.prismaService.registros.findMany({
         where: { idPlanta, dataDeExclusao: null },
         orderBy: {
-          dataDeRegistro: "asc",
+          dataDeRegistro: 'asc',
         },
       });
       await this.prismaService.$disconnect();
@@ -44,9 +44,7 @@ export class FindAllByPlantIdService {
     }
 
     const currentDate = new Date();
-    const startDate = new Date(
-      currentDate.getTime() - intervaloDeBusca * 24 * 60 * 60 * 1000,
-    );
+    const startDate = new Date(currentDate.getTime() - intervaloDeBusca * 24 * 60 * 60 * 1000);
     const registros = await this.prismaService.registros.findMany({
       where: {
         idPlanta,
@@ -57,7 +55,7 @@ export class FindAllByPlantIdService {
         },
       },
       orderBy: {
-        dataDeRegistro: "asc",
+        dataDeRegistro: 'asc',
       },
     });
     await this.prismaService.$disconnect();

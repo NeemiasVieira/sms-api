@@ -3,6 +3,7 @@ import { GraphQLError } from 'graphql';
 import { PrismaService } from 'src/database/prisma/prisma.service';
 import { Record } from '../../record.type';
 import { ICreateRecordArgs } from './create-records.args';
+import { UserType } from 'src/modules/users/user.type';
 
 const arredondar = (numero: number) => {
   const fator = 10 ** 2;
@@ -22,9 +23,8 @@ export const calcularPorcentagemDeLuz = (valor: number, maxEspecie: number): str
 export class CreateRecordService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async createRecord(data: ICreateRecordArgs): Promise<Record> {
+  async createRecord(data: ICreateRecordArgs, usuario: UserType): Promise<Record> {
     const { idPlanta } = data;
-    const { usuario, ...dados } = data;
 
     await this.prismaService.$connect();
 
@@ -42,7 +42,7 @@ export class CreateRecordService {
 
     if (!especie) throw new GraphQLError('Espécie nao encontrada');
 
-    const luz = calcularPorcentagemDeLuz(Number(dados.lux), Number(especie.maxLuz));
+    const luz = calcularPorcentagemDeLuz(Number(data.lux), Number(especie.maxLuz));
 
     const totalRegistros = await this.prismaService.registros.count({
       where: { idPlanta },
@@ -50,7 +50,7 @@ export class CreateRecordService {
 
     const novoRegistro = this.prismaService.registros.create({
       data: {
-        ...dados,
+        ...data,
         dataDeExclusao: null,
         simulado: planta.simulado,
         nomeEspecie: especie.nome,

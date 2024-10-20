@@ -4,6 +4,8 @@ import { PrismaService } from 'src/database/prisma/prisma.service';
 import { ValidationsService } from 'src/utils/validations.service';
 import { Record } from '../../record.type';
 import { IUpdateRecordArgs } from './update-record-by-id.types';
+import { UserType } from 'src/modules/users/user.type';
+import { calcularPorcentagemDeLuz } from '../create-record/create-record.service';
 
 @Injectable()
 export class UpdateRecordByIdService {
@@ -12,8 +14,8 @@ export class UpdateRecordByIdService {
     private readonly prismaService: PrismaService
   ) {}
 
-  async updateRecord(args: IUpdateRecordArgs): Promise<Record> {
-    const { id, usuario, ...data } = args;
+  async updateRecord(args: IUpdateRecordArgs, usuario: UserType): Promise<Record> {
+    const { id, ...data } = args;
 
     if (!this.validationsService.isObjectId(id)) throw new GraphQLError('ID invalido!');
 
@@ -39,9 +41,18 @@ export class UpdateRecordByIdService {
       throw new GraphQLError('Só é possível atualizar registros simulados');
     }
 
+    const especie = await this.prismaService.especies.findFirst({
+      where: { nome: planta.especie, dataDeExclusao: null },
+    });
+
+    if (!especie) throw new GraphQLError('Espécie nao encontrada');
+
+    const luz = calcularPorcentagemDeLuz(Number(data.lux), Number(especie.maxLuz));
+
     const registroAtualizado = await this.prismaService.registros.update({
       where: { id },
       data: {
+        luz,
         ...data,
       },
     });

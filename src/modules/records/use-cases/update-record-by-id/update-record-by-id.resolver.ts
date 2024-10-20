@@ -9,13 +9,11 @@ import { AuthUser } from 'src/decorators/authuser.decorator';
 
 @Resolver()
 export class UpdateRecordByIdResolver {
+  constructor(private readonly updateRecordByIdService: UpdateRecordByIdService) {}
 
-    constructor(private readonly updateRecordByIdService: UpdateRecordByIdService){}
-
-    @Mutation(() => Record)
-    @UseGuards(AuthGuard)
-    async updateRecord(@Args() args: IUpdateRecordArgs, @AuthUser() usuario: UserType): Promise<Record>{
-        args.usuario = usuario;
-        return await this.updateRecordByIdService.updateRecord(args);
-    }
+  @Mutation(() => Record)
+  @UseGuards(AuthGuard)
+  async updateRecord(@Args() args: IUpdateRecordArgs, @AuthUser() usuario: UserType): Promise<Record> {
+    return await this.updateRecordByIdService.updateRecord(args, usuario);
+  }
 }

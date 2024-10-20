@@ -1,15 +1,16 @@
-import { Injectable } from "@nestjs/common";
-import { GraphQLError } from "graphql";
-import { PrismaService } from "src/database/prisma/prisma.service";
-import { Plant } from "../../plant.type";
-import { CreatePlantArgs } from "./create-plant.args";
+import { Injectable } from '@nestjs/common';
+import { GraphQLError } from 'graphql';
+import { PrismaService } from 'src/database/prisma/prisma.service';
+import { Plant } from '../../plant.type';
+import { CreatePlantArgs } from './create-plant.args';
+import { UserType } from 'src/modules/users/user.type';
 
 @Injectable()
 export class CreatePlantService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async createPlant(args: CreatePlantArgs): Promise<Plant> {
-    const { nome, idEspecie, usuario, simulado } = args;
+  async createPlant(args: CreatePlantArgs, usuario: UserType): Promise<Plant> {
+    const { nome, idEspecie, simulado } = args;
 
     await this.prismaService.$connect();
 
@@ -20,15 +21,14 @@ export class CreatePlantService {
     });
 
     if (!especie) {
-      throw new GraphQLError("Espécie não encontrada");
+      throw new GraphQLError('Espécie não encontrada');
     }
 
-    const atendeOsCriteriosDeCriacao =
-      (simulado && especie.simulado) || (!simulado && !especie.simulado);
+    const atendeOsCriteriosDeCriacao = (simulado && especie.simulado) || (!simulado && !especie.simulado);
 
     if (!atendeOsCriteriosDeCriacao) {
       throw new GraphQLError(
-        "Espécie não atende os critérios de criação, verifique se a planta foi configurada como simulação",
+        'Espécie não atende os critérios de criação, verifique se a planta foi configurada como simulação'
       );
     }
 
@@ -41,7 +41,7 @@ export class CreatePlantService {
         dataDaPlantacao,
         dataDeExclusao: null,
         simulado: simulado ?? false,
-        solicitacaoNovoRegistro: "nenhuma",
+        solicitacaoNovoRegistro: 'nenhuma',
       },
     });
 

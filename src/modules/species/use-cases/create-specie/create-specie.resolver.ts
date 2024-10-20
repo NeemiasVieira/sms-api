@@ -31,11 +31,28 @@ export class CreateSpecieResolver {
 
     const { parametros, nome, ...data } = args;
 
-    const especieExiste = await this.prismaService.especies.findFirst({
-      where: { nome: args.nome, dataDeExclusao: null },
+    const especieSimuladaComMesmoNome = this.prismaService.especies.findFirst({
+      where: { nome: args.nome, dataDeExclusao: null, criadoPor: user.id },
     });
 
-    if (especieExiste && !args.simulado) throw new GraphQLError('Essa espécie já foi cadastrada no sistema');
+    const especieOficialComMesmoNome = this.prismaService.especies.findFirst({
+      where: { nome: args.nome, dataDeExclusao: null, simulado: false },
+    });
+
+    const [especieSimuladaJaExiste, especieOficialJaExiste] = await Promise.all([
+      especieSimuladaComMesmoNome,
+      especieOficialComMesmoNome,
+    ]);
+
+    if (especieSimuladaJaExiste) {
+      throw new GraphQLError(
+        `O nome da espécie precisa ser alterado pois conflita 
+        com uma espécie ${especieSimuladaJaExiste.simulado ? 'simulada' : 'oficial'} criada por você.`
+      );
+    }
+
+    if (especieOficialJaExiste)
+      throw new GraphQLError('O nome da espécie precisa ser alterado pois conflita com uma espécie oficial.');
 
     const novaEspecie = await this.prismaService.especies.create({
       data: {
@@ -43,6 +60,7 @@ export class CreateSpecieResolver {
         simulado: simulado ?? false,
         criadoPor: user.id,
         nome: nome?.trim(),
+        descricao: data?.descricao ?? '',
         ...data,
         ...this.specieMapper.mapParametros(parametros),
       },

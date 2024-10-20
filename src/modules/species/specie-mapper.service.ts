@@ -30,7 +30,7 @@ interface Parametro {
   max: string;
 }
 
-interface Parametros {
+export interface Parametros {
   nitrogenio: Parametro;
   fosforo: Parametro;
   potassio: Parametro;
