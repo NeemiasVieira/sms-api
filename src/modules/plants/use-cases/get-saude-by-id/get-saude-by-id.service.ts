@@ -22,6 +22,10 @@ export class GetSaudeByIdService {
 
     await this.prismaService.$disconnect();
 
+    if (!registro) {
+      return null;
+    }
+
     return this.gerarRelatorioDeSaude(registro, especie);
   }
 
@@ -47,10 +51,6 @@ export class GetSaudeByIdService {
         where: { idPlanta, dataDeExclusao: null },
         orderBy: { dataDeRegistro: 'desc' },
       });
-
-      if (!registro) {
-        return null;
-      }
 
       return { registro, especie };
     }
