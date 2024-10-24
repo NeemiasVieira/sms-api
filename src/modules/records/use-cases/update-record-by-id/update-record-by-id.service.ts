@@ -41,8 +41,10 @@ export class UpdateRecordByIdService {
       throw new GraphQLError('Só é possível atualizar registros simulados');
     }
 
-    const especie = await this.prismaService.especies.findFirst({
-      where: { nome: planta.especie, dataDeExclusao: null },
+    console.log(planta);
+
+    const especie = await this.prismaService.especies.findUnique({
+      where: { id: planta.idEspecie, dataDeExclusao: null },
     });
 
     if (!especie) throw new GraphQLError('Espécie nao encontrada');

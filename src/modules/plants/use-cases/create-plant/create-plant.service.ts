@@ -24,11 +24,12 @@ export class CreatePlantService {
       throw new GraphQLError('Espécie não encontrada');
     }
 
-    const atendeOsCriteriosDeCriacao = (simulado && especie.simulado) || (!simulado && !especie.simulado);
+    const atendeOsCriteriosDeCriacao =
+      (simulado && especie.simulado) || (simulado && !especie.simulado) || (!simulado && !especie.simulado);
 
     if (!atendeOsCriteriosDeCriacao) {
       throw new GraphQLError(
-        'Espécie não atende os critérios de criação, verifique se a planta foi configurada como simulação'
+        'Espécie não atende aos critérios, uma planta não simulada deve ser criada com uma espécie oficial, selecione outra espécie.'
       );
     }
 

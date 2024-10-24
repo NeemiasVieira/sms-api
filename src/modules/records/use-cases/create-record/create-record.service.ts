@@ -36,8 +36,8 @@ export class CreateRecordService {
 
     if (planta.idDono !== usuario.id) throw new GraphQLError('Usuário não autorizado');
 
-    const especie = await this.prismaService.especies.findFirst({
-      where: { nome: planta.especie, dataDeExclusao: null },
+    const especie = await this.prismaService.especies.findUnique({
+      where: { id: planta.idEspecie, dataDeExclusao: null },
     });
 
     if (!especie) throw new GraphQLError('Espécie nao encontrada');
