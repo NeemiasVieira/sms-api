@@ -14,7 +14,6 @@ export class FindAllByPlantIdResolver {
   @Query(() => [Record])
   @UseGuards(AuthGuard)
   async getAllRecordsByPlant(@Args() args: IFindAllByPlantIdArgs, @AuthUser() usuario: UserType): Promise<Record[]> {
-    args.usuario = usuario;
-    return await this.findAllByPlantIdService.getAll(args);
+    return await this.findAllByPlantIdService.getAll(args, usuario);
   }
 }

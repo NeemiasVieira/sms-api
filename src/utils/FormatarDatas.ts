@@ -22,7 +22,7 @@ const mesesDoAno = [
   "Dezembro",
 ] as const;
 
-enum Environment {
+export enum Environment {
   DEV = "development",
   PROD = "production",
 }

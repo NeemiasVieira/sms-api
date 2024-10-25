@@ -1,10 +1,10 @@
-import { Injectable } from "@nestjs/common";
-import { IRegistroPlanta, IRelatorioSaude } from "./relatorio-saude.types";
-import { GraphQLError } from "graphql";
-import { PrismaService } from "src/database/prisma/prisma.service";
-import { UserType } from "src/modules/users/user.type";
-import { SpecieMapper } from "src/modules/species/specie-mapper.service";
-import { Specie } from "src/modules/species/specie.type";
+import { Injectable } from '@nestjs/common';
+import { GraphQLError } from 'graphql';
+import { PrismaService } from 'src/database/prisma/prisma.service';
+import { SpecieMapper } from 'src/modules/species/specie-mapper.service';
+import { Specie } from 'src/modules/species/specie.type';
+import { UserType } from 'src/modules/users/user.type';
+import { IRegistroPlanta, IRelatorioSaude } from './relatorio-saude.types';
 
 /* eslint-disable max-len */
 
@@ -18,62 +18,69 @@ export class GetSaudeByIdService {
   public async getSaude(usuario: UserType, idPlanta?: string, idRegistro?: string): Promise<IRelatorioSaude> {
     await this.prismaService.$connect();
 
-    const { registro, specie } = await this.verificarDados(usuario, idPlanta, idRegistro);
+    const { registro, especie } = await this.verificarDados(usuario, idPlanta, idRegistro);
 
     await this.prismaService.$disconnect();
 
-    return this.gerarRelatorioDeSaude(registro, specie);
+    if (!registro) {
+      return null;
+    }
+
+    return this.gerarRelatorioDeSaude(registro, especie);
   }
 
   private verificarDados = async (usuario: UserType, idPlanta?: string, idRegistro?: string) => {
     if (idPlanta && idRegistro)
-      throw new GraphQLError("Escolha apenas um tipo de consulta passando apenas um argumento opcional");
+      throw new GraphQLError('Escolha apenas um tipo de consulta passando apenas um argumento opcional');
 
     if (!idPlanta && !idRegistro)
-      throw new GraphQLError("É necessário passar um registro ou uma planta para a service de relatório de saúde");
-    else if (idPlanta && !idRegistro) {
-      const planta = await this.prismaService.plantas.findUnique({ where: { id: idPlanta } });
+      throw new GraphQLError('É necessário passar um registro ou uma planta para a service de relatório de saúde');
 
-      if (!planta) throw new GraphQLError("A planta não existe");
-
-      if (planta.idDono !== usuario.id) throw new GraphQLError("Usuário não autorizado");
-
-      const especie = await this.prismaService.especies.findFirst({ where: { nome: planta.especie } });
-
-      if (!especie) throw new GraphQLError("A espécie da planta nao foi cadastrada no banco de dados");
-
-      const specie = this.specieMapper.reverseMapParametros(especie);
-
-      const registro = await this.prismaService.registros.findFirst({
-        where: { idPlanta },
-        orderBy: { dataDeRegistro: "desc" },
+    if (idPlanta && !idRegistro) {
+      const planta = await this.prismaService.plantas.findUnique({
+        where: { id: idPlanta, dataDeExclusao: null },
       });
 
-      if (!registro) {
-        throw new GraphQLError("A planta não possui nenhum registro");
-      }
+      if (!planta) throw new GraphQLError('A planta não existe');
 
-      return { registro, specie };
-    } else if (!idPlanta && idRegistro) {
-      const registro = await this.prismaService.registros.findUnique({ where: { id: idRegistro } });
+      if (planta.idDono !== usuario.id) throw new GraphQLError('Usuário não autorizado');
 
-      if (!registro) throw new GraphQLError("Nenhum registro encontrado.");
+      const especie = await this.getEspecie(planta.idEspecie);
 
-      const planta = await this.prismaService.plantas.findUnique({ where: { id: registro.idPlanta } });
+      const registro = await this.prismaService.registros.findFirst({
+        where: { idPlanta, dataDeExclusao: null },
+        orderBy: { dataDeRegistro: 'desc' },
+      });
 
-      if (!planta) throw new GraphQLError("Nenhuma planta encontrada");
-
-      if (planta.idDono !== usuario.id) throw new GraphQLError("Usuário não autorizado");
-
-      const especie = await this.prismaService.especies.findFirst({ where: { nome: planta.especie } });
-
-      if (!especie) throw new GraphQLError("Nenhuma espécie encontrada");
-
-      const specie = this.specieMapper.reverseMapParametros(especie);
-
-      return { registro, specie };
+      return { registro, especie };
     }
+
+    const registro = await this.prismaService.registros.findUnique({
+      where: { id: idRegistro, dataDeExclusao: null },
+    });
+
+    if (!registro) throw new GraphQLError('Nenhum registro encontrado.');
+
+    const planta = await this.prismaService.plantas.findUnique({
+      where: { id: registro.idPlanta, dataDeExclusao: null },
+    });
+
+    if (!planta) throw new GraphQLError('Nenhuma planta encontrada');
+
+    if (planta.idDono !== usuario.id) throw new GraphQLError('Usuário não autorizado');
+
+    const especie = await this.getEspecie(planta.idEspecie);
+
+    return { registro, especie };
   };
+
+  private async getEspecie(idEspecie: string) {
+    const especie = await this.prismaService.especies.findUnique({
+      where: { id: idEspecie, dataDeExclusao: null },
+    });
+    if (!especie) throw new GraphQLError('Nenhuma espécie encontrada');
+    return this.specieMapper.reverseMapParametros(especie);
+  }
 
   private gerarRelatorioDeSaude(registro: IRegistroPlanta, specie: Specie): IRelatorioSaude {
     const p = specie.parametros;
@@ -117,39 +124,39 @@ export class GetSaudeByIdService {
       if (valor < faixaBaixa) {
         pontuacao += 1;
         switch (nomeVariavel) {
-          case "nitrogênio":
+          case 'nitrogênio':
             alertas.push(
               `Deficiência de nitrogênio pode afetar negativamente a planta. A faixa saudável para o(a) ${specie.nome} é entre ${v.nitrogenio.min} a ${v.nitrogenio.max}mg/Kg.`
             );
             break;
-          case "fósforo":
+          case 'fósforo':
             alertas.push(
               `Deficiência de fósforo pode prejudicar o desenvolvimento da planta. A faixa saudável para o(a) ${specie.nome} é entre ${v.fosforo.min} a ${v.fosforo.max}mg/Kg.`
             );
             break;
-          case "potássio":
+          case 'potássio':
             alertas.push(
               `Deficiência de potássio pode impactar a saúde da planta. A faixa saudável para o(a) ${specie.nome} é entre ${v.potassio.min} a ${v.potassio.max}mg/Kg.`
             );
             break;
-          case "temperatura":
+          case 'temperatura':
             alertas.push(
               `Temperaturas abaixo de ${v.temperatura.min}°C podem ser prejudiciais para o(a) ${specie.nome}. Evite temperaturas muito baixas.`
             );
             break;
-          case "umidade":
+          case 'umidade':
             alertas.push(
               `Umidade do ar abaixo de ${v.umidade.min}% pode levar à desidratação da planta. Monitore a umidade do solo.`
             );
             break;
-          case "pH":
+          case 'pH':
             alertas.push(
               `pH do solo abaixo de ${v.pH.min} pode dificultar a absorção de nutrientes pela planta. Faça correções no solo.`
             );
             break;
-          case "luz":
+          case 'luz':
             alertas.push(
-              "Atenção: Sua planta pode não estar recebendo luz suficiente! Isso pode afetar negativamente o seu crescimento e saúde. Certifique-se de colocá-la em um local com mais luz solar ou considere o uso de luzes artificiais de crescimento."
+              'Atenção: Sua planta pode não estar recebendo luz suficiente! Isso pode afetar negativamente o seu crescimento e saúde. Certifique-se de colocá-la em um local com mais luz solar ou considere o uso de luzes artificiais de crescimento.'
             );
             break;
           default:
@@ -157,72 +164,72 @@ export class GetSaudeByIdService {
               `Deficiência de ${nomeVariavel} pode afetar negativamente a planta. Consulte um especialista em nutrição vegetal.`
             );
         }
-        return "Deficiência";
+        return 'Deficiência';
       } else if (valor >= faixaBaixa && valor <= faixaSaudavel) {
-        return "Saudável";
+        return 'Saudável';
       } else {
         pontuacao += 1;
         switch (nomeVariavel) {
-          case "nitrogênio":
+          case 'nitrogênio':
             alertas.push(
               `Excesso de nitrogênio pode prejudicar a saúde da planta. A faixa saudável para o(a) ${specie.nome} é entre ${v.nitrogenio.min} a ${v.nitrogenio.max}.`
             );
             break;
-          case "fósforo":
+          case 'fósforo':
             alertas.push(
               `Excesso de fósforo pode causar desequilíbrios no solo. A faixa saudável para o(a) ${specie.nome} é entre ${v.fosforo.min} a ${v.fosforo.max}mg/Kg.`
             );
             break;
-          case "potássio":
+          case 'potássio':
             alertas.push(
               `Excesso de potássio pode prejudicar a absorção de outros nutrientes pela planta. A faixa saudável para o(a) ${specie.nome} é entre ${v.potassio.min} a ${v.potassio.max}mg/Kg.`
             );
             break;
-          case "temperatura":
+          case 'temperatura':
             alertas.push(
               `Temperaturas acima de ${v.temperatura.max}°C podem causar estresse térmico na planta. Evite temperaturas muito altas.`
             );
             break;
-          case "umidade":
+          case 'umidade':
             alertas.push(
               `Umidade do ar acima de ${v.umidade.max}% pode aumentar o risco de doenças fúngicas, como o oídio. Monitore a umidade do solo.`
             );
             break;
-          case "pH":
+          case 'pH':
             alertas.push(
               `pH do solo acima de ${v.pH.max} pode resultar em deficiência de nutrientes e desequilíbrios no solo. Faça correções no solo.`
             );
             break;
-          case "luz":
-            alertas.push("Excesso de luminosidade");
+          case 'luz':
+            alertas.push('Excesso de luminosidade');
             break;
           default:
             alertas.push(
               `Excesso de ${nomeVariavel} pode prejudicar a saúde da planta. Consulte um especialista em nutrição vegetal.`
             );
         }
-        return "Excesso";
+        return 'Excesso';
       }
     };
 
-    const nitrogenio = avaliarSaude(Number(registro.nitrogenio), v.nitrogenio.min, v.nitrogenio.max, "nitrogênio");
-    const fosforo = avaliarSaude(Number(registro.fosforo), v.fosforo.min, v.fosforo.max, "fósforo");
-    const potassio = avaliarSaude(Number(registro.potassio), v.potassio.min, v.fosforo.max, "potássio");
-    const temperatura = avaliarSaude(Number(registro.temperatura), v.temperatura.min, v.temperatura.max, "temperatura");
-    const umidade = avaliarSaude(Number(registro.umidade), v.umidade.min, v.umidade.max, "umidade");
-    const pH = avaliarSaude(Number(registro.pH), v.pH.min, v.pH.max, "pH");
-    const luz = avaliarSaude(Number(registro.lux), v.luz.min, v.luz.max, "luz");
+    const nitrogenio = avaliarSaude(Number(registro.nitrogenio), v.nitrogenio.min, v.nitrogenio.max, 'nitrogênio');
+    const fosforo = avaliarSaude(Number(registro.fosforo), v.fosforo.min, v.fosforo.max, 'fósforo');
+    const potassio = avaliarSaude(Number(registro.potassio), v.potassio.min, v.fosforo.max, 'potássio');
+    const temperatura = avaliarSaude(Number(registro.temperatura), v.temperatura.min, v.temperatura.max, 'temperatura');
+    const umidade = avaliarSaude(Number(registro.umidade), v.umidade.min, v.umidade.max, 'umidade');
+    const pH = avaliarSaude(Number(registro.pH), v.pH.min, v.pH.max, 'pH');
+    const luz = avaliarSaude(Number(registro.lux), v.luz.min, v.luz.max, 'luz');
 
-    let estadoGeral = "Ruim";
+    let estadoGeral = 'Ruim';
     switch (pontuacao) {
       case 0:
-        estadoGeral = "Excelente!";
+        estadoGeral = 'Excelente!';
         break;
       case 1:
-        estadoGeral = "Bom";
+        estadoGeral = 'Bom';
         break;
       case 2:
-        estadoGeral = "Regular";
+        estadoGeral = 'Regular';
         break;
     }
 

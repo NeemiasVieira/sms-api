@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { hash } from "bcrypt";
-import { User } from "../../user.type";
 import { GraphQLError } from "graphql";
 import { PrismaService } from "src/database/prisma/prisma.service";
+import { User } from "../../user.type";
 
 @Injectable()
 export class CreateUserService {
@@ -15,7 +15,9 @@ export class CreateUserService {
       throw new GraphQLError("Todos os campos são obrigatórios!");
     }
 
-    const usuarioExiste = await this.prismaService.users.findUnique({ where: { email } });
+    const usuarioExiste = await this.prismaService.users.findUnique({
+      where: { email, dataDeExclusao: null },
+    });
 
     if (usuarioExiste) {
       throw new GraphQLError("Usuário já existe");
@@ -27,7 +29,7 @@ export class CreateUserService {
 
     if (!this.senhaSegura(senha)) {
       throw new GraphQLError(
-        "A senha precisa conter pelo menos um caractere especial, uma letra maiuscula, 8 caracteres e um número, tente novamente."
+        "A senha precisa conter pelo menos um caractere especial, uma letra maiuscula, 8 caracteres e um número, tente novamente.",
       );
     }
 
@@ -36,7 +38,14 @@ export class CreateUserService {
     const dataDeCriacao = new Date();
 
     const newUser = await this.prismaService.users.create({
-      data: { nome, email, senha: senhaCriptografada, dataDeCriacao, profile: "user" },
+      data: {
+        nome,
+        email,
+        senha: senhaCriptografada,
+        dataDeCriacao,
+        profile: "user",
+        dataDeExclusao: null,
+      },
     });
 
     await this.prismaService.$disconnect();

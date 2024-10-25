@@ -1,35 +1,70 @@
+import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { GraphQLError } from 'graphql';
+import { PrismaService } from 'src/database/prisma/prisma.service';
+import { IsAdmin } from 'src/decorators/admin.decorator';
+import { AuthGuard } from 'src/middlewares/auth/auth';
+import { SpecieMapper } from '../../specie-mapper.service';
 import { Specie } from '../../specie.type';
 import { CreateSpecieArgs } from './create-specie.args';
-import { PrismaService } from 'src/database/prisma/prisma.service';
-import { SpecieMapper } from '../../specie-mapper.service';
-import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from 'src/middlewares/auth/auth';
-import { IsAdmin } from 'src/decorators/admin.decorator';
-import { GraphQLError } from 'graphql';
+import { AuthUser } from 'src/decorators/authuser.decorator';
+import { UserType } from 'src/modules/users/user.type';
 
 @Resolver()
 export class CreateSpecieResolver {
-
-  constructor(private readonly prismaService: PrismaService, private readonly specieMapper: SpecieMapper) {} 
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly specieMapper: SpecieMapper
+  ) {}
   @UseGuards(AuthGuard)
   @Mutation(() => Specie)
-  async createSpecie(@Args() args: CreateSpecieArgs, @IsAdmin() isAdmin: boolean): Promise<Specie>{
+  async createSpecie(
+    @Args() args: CreateSpecieArgs,
+    @IsAdmin() isAdmin: boolean,
+    @AuthUser() user: UserType
+  ): Promise<Specie> {
+    const { simulado } = args;
 
-    if(!isAdmin) throw new GraphQLError("Usuário sem permissao de modificaçao");
+    if (!isAdmin && !simulado) throw new GraphQLError('Usuário não autorizado!');
 
     await this.prismaService.$connect();
 
-    const { parametros, ...data } = args;
+    const { parametros, nome, ...data } = args;
 
-    const especieExiste = await this.prismaService.especies.findFirst({where: {nome: args.nome}});
+    const especieSimuladaComMesmoNome = this.prismaService.especies.findFirst({
+      where: { nome: args.nome, dataDeExclusao: null, criadoPor: user.id },
+    });
 
-    if(especieExiste) throw new GraphQLError("Essa espécie já foi cadastrada no sistema");
+    const especieOficialComMesmoNome = this.prismaService.especies.findFirst({
+      where: { nome: args.nome, dataDeExclusao: null, simulado: false },
+    });
 
-    const novaEspecie = await this.prismaService.especies.create({ data: {
-      ...data,
-      ...this.specieMapper.mapParametros(parametros)
-    }});
+    const [especieSimuladaJaExiste, especieOficialJaExiste] = await Promise.all([
+      especieSimuladaComMesmoNome,
+      especieOficialComMesmoNome,
+    ]);
+
+    if (especieSimuladaJaExiste) {
+      throw new GraphQLError(
+        `O nome da espécie precisa ser alterado pois conflita 
+        com uma espécie ${especieSimuladaJaExiste.simulado ? 'simulada' : 'oficial'} criada por você.`
+      );
+    }
+
+    if (especieOficialJaExiste)
+      throw new GraphQLError('O nome da espécie precisa ser alterado pois conflita com uma espécie oficial.');
+
+    const novaEspecie = await this.prismaService.especies.create({
+      data: {
+        dataDeExclusao: null,
+        simulado: simulado ?? false,
+        criadoPor: user.id,
+        nome: nome?.trim(),
+        descricao: data?.descricao ?? '',
+        ...data,
+        ...this.specieMapper.mapParametros(parametros),
+      },
+    });
 
     await this.prismaService.$disconnect();
 

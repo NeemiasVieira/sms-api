@@ -1,19 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { GraphQLError } from 'graphql';
+import { PrismaService } from 'src/database/prisma/prisma.service';
 import { ValidationsService } from 'src/utils/validations.service';
 import { Record } from '../../record.type';
-import { PrismaService } from 'src/database/prisma/prisma.service';
 import { IFindAllByPlantIdArgs } from './find-all-by-plant-id.types';
+import { UserType } from 'src/modules/users/user.type';
 
 @Injectable()
 export class FindAllByPlantIdService {
   constructor(
     private readonly validationsService: ValidationsService,
-    private readonly prismaService: PrismaService,
+    private readonly prismaService: PrismaService
   ) {}
 
-  async getAll(args: IFindAllByPlantIdArgs): Promise<Record[]> {
-    const { idPlanta, intervaloDeDias, intervaloDeBusca, usuario } = args;
+  async getAll(args: IFindAllByPlantIdArgs, usuario: UserType): Promise<Record[]> {
+    const { idPlanta, intervaloDeBusca } = args;
 
     if (!this.validationsService.isObjectId(idPlanta)) {
       throw new GraphQLError('ID da planta é inválido');
@@ -22,7 +23,7 @@ export class FindAllByPlantIdService {
     await this.prismaService.$connect();
 
     const plantaExiste = await this.prismaService.plantas.findUnique({
-      where: { id: idPlanta },
+      where: { id: idPlanta, dataDeExclusao: null },
     });
 
     if (!plantaExiste) {
@@ -31,11 +32,9 @@ export class FindAllByPlantIdService {
 
     if (plantaExiste.idDono !== usuario.id) throw new GraphQLError('Usuário não autorizado');
 
-    let registros;
-
-    if (!intervaloDeDias && !intervaloDeBusca) {
-      registros = await this.prismaService.registros.findMany({
-        where: { idPlanta },
+    if (!intervaloDeBusca) {
+      const registros = await this.prismaService.registros.findMany({
+        where: { idPlanta, dataDeExclusao: null },
         orderBy: {
           dataDeRegistro: 'asc',
         },
@@ -44,63 +43,22 @@ export class FindAllByPlantIdService {
       return registros;
     }
 
-    if (!intervaloDeDias && intervaloDeBusca) {
-      const currentDate = new Date();
-      const startDate = new Date(currentDate.getTime() - intervaloDeBusca * 24 * 60 * 60 * 1000);
-      registros = await this.prismaService.registros.findMany({
-        where: {
-          idPlanta,
-          dataDeRegistro: {
-            gte: startDate,
-            lte: currentDate,
-          },
+    const currentDate = new Date();
+    const startDate = new Date(currentDate.getTime() - intervaloDeBusca * 24 * 60 * 60 * 1000);
+    const registros = await this.prismaService.registros.findMany({
+      where: {
+        idPlanta,
+        dataDeExclusao: null,
+        dataDeRegistro: {
+          gte: startDate,
+          lte: currentDate,
         },
-        orderBy: {
-          dataDeRegistro: 'asc',
-        },
-      });
-      await this.prismaService.$disconnect();
-      return registros;
-    }
-
-    if (intervaloDeDias && !intervaloDeBusca) {
-      registros = await this.prismaService.registros.findMany({ where: { idPlanta } });
-    }
-
-    if (intervaloDeDias && intervaloDeBusca) {
-      const currentDate = new Date();
-      const startDate = new Date(currentDate.getTime() - intervaloDeBusca * 24 * 60 * 60 * 1000);
-      registros = await this.prismaService.registros.findMany({
-        where: {
-          idPlanta,
-          dataDeRegistro: {
-            gte: startDate,
-            lte: currentDate,
-          },
-        },
-      });
-    }
-
-    const aggregatedRecords = [];
-
-    if (registros.length > 0) {
-      aggregatedRecords.push(registros[0]);
-
-      for (let i = 1; i < registros.length; i++) {
-        const registroDate = new Date(registros[i].dataDeRegistro);
-        const lastAggregatedDate = new Date(aggregatedRecords[aggregatedRecords.length - 1].dataDeRegistro);
-        const daysDifference = Math.floor(
-          (lastAggregatedDate.getTime() - registroDate.getTime()) / (24 * 60 * 60 * 1000),
-        );
-
-        if (daysDifference >= intervaloDeDias) {
-          aggregatedRecords.push(registros[i]);
-        }
-      }
-    }
-
+      },
+      orderBy: {
+        dataDeRegistro: 'asc',
+      },
+    });
     await this.prismaService.$disconnect();
-
-    return aggregatedRecords.reverse();
+    return registros;
   }
 }

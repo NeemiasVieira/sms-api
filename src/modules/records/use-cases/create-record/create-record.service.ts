@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { ICreateRecordArgs } from './create-records.args';
-import { Record } from '../../record.type';
-import { PrismaService } from 'src/database/prisma/prisma.service';
 import { GraphQLError } from 'graphql';
+import { PrismaService } from 'src/database/prisma/prisma.service';
+import { Record } from '../../record.type';
+import { ICreateRecordArgs } from './create-records.args';
+import { UserType } from 'src/modules/users/user.type';
 
 const arredondar = (numero: number) => {
   const fator = 10 ** 2;
@@ -22,30 +23,41 @@ export const calcularPorcentagemDeLuz = (valor: number, maxEspecie: number): str
 export class CreateRecordService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async createRecord(data: ICreateRecordArgs): Promise<Record> {
+  async createRecord(data: ICreateRecordArgs, usuario: UserType): Promise<Record> {
     const { idPlanta } = data;
-    const { usuario, ...dados } = data;
 
     await this.prismaService.$connect();
 
     const dataDeRegistro = new Date();
 
-    const planta = await this.prismaService.plantas.findUnique({ where: { id: idPlanta } });
+    const planta = await this.prismaService.plantas.findUnique({
+      where: { id: idPlanta, dataDeExclusao: null },
+    });
 
     if (planta.idDono !== usuario.id) throw new GraphQLError('Usuário não autorizado');
 
-    const especie = await this.prismaService.especies.findFirst({ where: { nome: planta.especie } });
+    const especie = await this.prismaService.especies.findUnique({
+      where: { id: planta.idEspecie, dataDeExclusao: null },
+    });
 
     if (!especie) throw new GraphQLError('Espécie nao encontrada');
 
-    const luz = calcularPorcentagemDeLuz(Number(dados.lux), Number(especie.maxLuz));
+    const luz = calcularPorcentagemDeLuz(Number(data.lux), Number(especie.maxLuz));
+
+    const totalRegistros = await this.prismaService.registros.count({
+      where: { idPlanta },
+    });
 
     const novoRegistro = this.prismaService.registros.create({
       data: {
-        ...dados,
+        ...data,
+        dataDeExclusao: null,
+        simulado: planta.simulado,
         nomeEspecie: especie.nome,
+        nuRegistro: totalRegistros + 1,
         luz,
         dataDeRegistro,
+        idEspecie: planta.idEspecie,
       },
     });
 

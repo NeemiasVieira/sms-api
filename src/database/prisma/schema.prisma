@@ -17,25 +17,29 @@ datasource db {
 }
 
 model users {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  email         String   @unique(map: "findEmail")
-  nome          String
-  senha         String
-  dataDeCriacao DateTime
-  profile       String
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  email          String    @unique(map: "findEmail")
+  nome           String
+  senha          String
+  dataDeCriacao  DateTime
+  profile        String
+  dataDeExclusao DateTime?
 }
 
 model plantas {
   id                      String            @id @default(auto()) @map("_id") @db.ObjectId
   idDono                  String
+  idEspecie               String
   nome                    String
   especie                 String
   dataDaPlantacao         DateTime
   solicitacaoNovoRegistro StatusSolicitacao
+  simulado                Boolean?
+  dataDeExclusao          DateTime?
 }
 
 model especies {
-  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
   nome           String
   descricao      String
   minNitrogenio  String
@@ -52,11 +56,15 @@ model especies {
   maxUmidade     String
   maxTemperatura String
   maxPh          String
+  simulado       Boolean?
+  criadoPor      String?
+  dataDeExclusao DateTime?
 }
 
 model registros {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
   idPlanta       String
+  idEspecie      String
   nomeEspecie    String
   nitrogenio     String
   fosforo        String
@@ -69,4 +77,7 @@ model registros {
   dataDeRegistro DateTime
   imagem         String?
   diagnostico    String?
+  nuRegistro     Int?
+  dataDeExclusao DateTime?
+  simulado       Boolean?
 }

@@ -12,10 +12,10 @@ import { GraphQLError } from 'graphql';
 export class GetSaudeByIdResolver {
   constructor(
     private readonly getSaudeByIdService: GetSaudeByIdService,
-    private readonly validationService: ValidationsService,
+    private readonly validationService: ValidationsService
   ) {}
 
-  @Query(() => IRelatorioSaude)
+  @Query(() => IRelatorioSaude, { nullable: true })
   @UseGuards(AuthGuard)
   async getSaudeByPlantId(@Args('idPlanta') idPlanta: string, @AuthUser() usuario: UserType): Promise<IRelatorioSaude> {
     if (!this.validationService.isObjectId(idPlanta)) throw new GraphQLError('ID da planta inválido');

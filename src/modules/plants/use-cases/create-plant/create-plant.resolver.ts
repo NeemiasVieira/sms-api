@@ -10,12 +10,10 @@ import { AuthGuard } from 'src/middlewares/auth/auth';
 @Resolver()
 @UseGuards(AuthGuard)
 export class CreatePlantResolver {
-    constructor(private readonly createPlantService: CreatePlantService){}
-        
-        @Mutation(() => Plant)
-        async createPlant(@Args() args: CreatePlantArgs, @AuthUser() usuario: UserType): Promise<Plant>{
-            args.usuario = usuario;
-            return await this.createPlantService.createPlant(args);
-        }
-    
+  constructor(private readonly createPlantService: CreatePlantService) {}
+
+  @Mutation(() => Plant)
+  async createPlant(@Args() args: CreatePlantArgs, @AuthUser() usuario: UserType): Promise<Plant> {
+    return await this.createPlantService.createPlant(args, usuario);
+  }
 }

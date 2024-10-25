@@ -59,6 +59,8 @@ export class RecordPaginated {
   diagnostico?: string;
   @Field()
   nuRegistro: number;
+  @Field()
+  simulado: boolean;
 }
 
 @ObjectType()
@@ -69,4 +71,6 @@ export class IGetAllRecordsPaginatedResponse {
   pagina: number;
   @Field()
   totalPaginas: number;
+  @Field()
+  totalResultados: number;
 }

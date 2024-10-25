@@ -1,12 +1,8 @@
-import { UserType } from 'src/modules/users/user.type';
-import {
-  IGetAllRecordsPaginatedArgs,
-  IGetAllRecordsPaginatedResponse,
-  RecordPaginated,
-} from './get-all-records-paginated.types';
-import { PrismaService } from 'src/database/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { GraphQLError } from 'graphql';
+import { PrismaService } from 'src/database/prisma/prisma.service';
+import { UserType } from 'src/modules/users/user.type';
+import { IGetAllRecordsPaginatedArgs, IGetAllRecordsPaginatedResponse } from './get-all-records-paginated.types';
 
 @Injectable()
 export class GetAllRecordsPaginatedService {
@@ -15,7 +11,9 @@ export class GetAllRecordsPaginatedService {
   async get(args: IGetAllRecordsPaginatedArgs, usuario: UserType): Promise<IGetAllRecordsPaginatedResponse> {
     await this.prisma.$connect();
 
-    const planta = await this.prisma.plantas.findUnique({ where: { id: args.idPlanta } });
+    const planta = await this.prisma.plantas.findUnique({
+      where: { id: args.idPlanta, dataDeExclusao: null },
+    });
 
     if (!planta) {
       throw new GraphQLError('Planta não existe');
@@ -28,9 +26,10 @@ export class GetAllRecordsPaginatedService {
     const { registrosPorPag, dataDeInicioBusca, dataDeFimBusca, idPlanta, pagina } = args;
 
     //Busca paginada
-    const registrosFromDB = await this.prisma.registros.findMany({
+    const registros = await this.prisma.registros.findMany({
       where: {
         idPlanta,
+        dataDeExclusao: null,
         ...(dataDeInicioBusca &&
           dataDeFimBusca && {
             dataDeRegistro: {
@@ -46,18 +45,6 @@ export class GetAllRecordsPaginatedService {
       take: registrosPorPag,
     });
 
-    const allRegistrosFromDB = await this.prisma.registros.findMany({
-      where: { idPlanta },
-      orderBy: { dataDeRegistro: 'desc' },
-    });
-
-    //Faz o calculo dinamico do nuRegistro
-    const deParaMap = {};
-    for (let i = allRegistrosFromDB.length - 1; i >= 0; i--) {
-      const registro = allRegistrosFromDB[i];
-      deParaMap[registro.id] = allRegistrosFromDB.length - i;
-    }
-
     const totalRegistros = await this.prisma.registros.count({
       where: {
         idPlanta,
@@ -71,29 +58,8 @@ export class GetAllRecordsPaginatedService {
       },
     });
 
-    const registros: RecordPaginated[] = registrosFromDB.map((registro) => {
-      const nuRegistro = deParaMap[registro.id];
-      return { ...registro, nuRegistro };
-    });
-
-    let totalRegistrosDaBusca: number;
-
-    if (dataDeInicioBusca && dataDeFimBusca) {
-      totalRegistrosDaBusca = await this.prisma.registros.count({
-        where: {
-          idPlanta,
-          dataDeRegistro: {
-            gte: new Date(dataDeInicioBusca.toISOString().substring(0, 10) + 'T00:00:00Z'),
-            lt: new Date(dataDeFimBusca.toISOString().substring(0, 10) + 'T23:59:59Z'),
-          },
-        },
-      });
-    }
-
-    const totalPaginas =
-      dataDeInicioBusca && dataDeFimBusca
-        ? Math.ceil(totalRegistrosDaBusca / registrosPorPag)
-        : Math.ceil(totalRegistros / registrosPorPag);
+    const totalPaginas = Math.ceil(totalRegistros / registrosPorPag);
+    const totalResultados = totalRegistros;
 
     await this.prisma.$disconnect();
 
@@ -101,6 +67,7 @@ export class GetAllRecordsPaginatedService {
       registros,
       pagina,
       totalPaginas,
+      totalResultados,
     };
   }
 }

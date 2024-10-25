@@ -8,6 +8,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { PrismaService } from "src/database/prisma/prisma.service";
 import { SpecieMapper } from "./specie-mapper.service";
 import { ValidationsService } from "src/utils/validations.service";
+import { GetSpecieByPlantIdResolver } from './use-cases/get-specie-by-plant-id/get-specie-by-plant-id.resolver';
 
 @Module({
   imports: [JwtModule],
@@ -20,6 +21,7 @@ import { ValidationsService } from "src/utils/validations.service";
     PrismaService,
     SpecieMapper,
     ValidationsService,
+    GetSpecieByPlantIdResolver,
   ],
 })
 export class SpeciesModule {}

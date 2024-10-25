@@ -14,7 +14,6 @@ export class CreateRecordResolver {
   @Mutation(() => Record)
   @UseGuards(AuthGuard)
   async createRecord(@Args() args: ICreateRecordArgs, @AuthUser() usuario: UserType): Promise<Record> {
-    args.usuario = usuario;
-    return await this.createRecordService.createRecord(args);
+    return await this.createRecordService.createRecord(args, usuario);
   }
 }

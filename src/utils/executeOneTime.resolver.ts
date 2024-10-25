@@ -9,8 +9,6 @@ export class ExecuteOneTimeResolver {
   async executeOneTime() {
     await this.prismaService.$connect();
 
-    // Executar a acao aqui
-
     await this.prismaService.$disconnect();
 
     return 'Executado com sucesso.';
