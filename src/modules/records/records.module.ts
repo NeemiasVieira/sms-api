@@ -19,6 +19,8 @@ import { GetRecordService } from './use-cases/get-record/get-record.service';
 import { GeneratePdfResolver } from './use-cases/generate-pdf/generate-pdf.resolver';
 import { GeneratePdfService } from './use-cases/generate-pdf/generate-pdf.service';
 import { SpecieMapper } from '../species/specie-mapper.service';
+import { GetRecordsAvgResolver } from './use-cases/get-records-avg/get-records-avg.resolver';
+import { GetRecordsAvgService } from './use-cases/get-records-avg/get-records-avg.service';
 
 @Module({
   imports: [JwtModule],
@@ -42,6 +44,8 @@ import { SpecieMapper } from '../species/specie-mapper.service';
     GeneratePdfResolver,
     GeneratePdfService,
     SpecieMapper,
+    GetRecordsAvgResolver,
+    GetRecordsAvgService,
   ],
 })
 export class RecordsModule {}
