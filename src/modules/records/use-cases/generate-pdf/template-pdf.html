@@ -26,6 +26,9 @@
       .content {
         margin-top: 20px;
       }
+      .content p {
+        max-width: 420px;
+      }
       .table {
         width: 100%;
         border-collapse: collapse;
@@ -72,16 +75,16 @@
     <div class="content">
       <h3>Nome do Usuário: {{usuario.nome}}</h3>
       <h3>Dados da Planta</h3>
-      <p>Nome: {{planta.nome}}</p>
-      <p>Espécie: {{especie.nome}}</p>
-      <p>Data de Plantação: {{planta.dataDePlantacao}}</p>
-      <p>Diagnóstico por IA: {{registro.diagnostico}}</p>
+      <p><b>Nome:</b> {{planta.nome}}</p>
+      <p><b>Espécie:</b> {{especie.nome}}</p>
+      <p><b>Data de Plantação:</b> {{planta.dataDePlantacao}}</p>
+      <p><b>Diagnóstico por IA:</b> {{registro.diagnostico}}</p>
       <h3>Comparação de Valores</h3>
       <table class="table">
         <tr>
           <th>Parâmetro</th>
-          <th>Especie (Min)</th>
-          <th>Especie (Max)</th>
+          <th>Espécie (Min)</th>
+          <th>Espécie (Max)</th>
           <th>Registro</th>
         </tr>
         <tr>
