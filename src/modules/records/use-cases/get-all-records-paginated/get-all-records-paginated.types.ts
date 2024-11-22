@@ -34,6 +34,8 @@ export class RecordPaginated {
   @Field()
   idPlanta: string;
   @Field()
+  idEspecie: string;
+  @Field()
   nitrogenio: string;
   @Field()
   fosforo: string;
