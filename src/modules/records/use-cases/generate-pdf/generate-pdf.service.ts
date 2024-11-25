@@ -117,18 +117,7 @@ export class GeneratePdfService {
     const temperaturaClass = getInfoColor(values.registro.temperatura, values.especie.parametros.temperatura);
     const pHClass = getInfoColor(values.registro.pH, values.especie.parametros.pH);
 
-    const placeholders: Record<string, string> = {
-      '{{dataDeRegistro}}': values.registro.dataDeRegistro,
-      '{{usuario.id}}': values.usuario.id,
-      '{{planta.id}}': values.planta.id,
-      '{{especie.id}}': values.especie.id,
-      '{{especie.nome}}': values.especie.nome,
-      '{{registro.imagem}}': imageTemplateHTML,
-      '{{registro.diagnostico}}': values.registro.diagnostico ?? 'Este registro não teve um diagnóstico',
-      '{{registro.id}}': values.registro.id,
-      '{{usuario.nome}}': values.usuario.nome,
-      '{{planta.nome}}': values.planta.nome,
-      '{{planta.dataDePlantacao}}': values.planta.dataDePlantacao,
+    const numbersPlaceholders: Record<string, string> = {
       '{{especie.parametros.nitrogenio.min}}': values.especie.parametros.nitrogenio.min,
       '{{especie.parametros.nitrogenio.max}}': values.especie.parametros.nitrogenio.max,
       '{{registro.nitrogenio}}': values.registro.nitrogenio,
@@ -152,7 +141,18 @@ export class GeneratePdfService {
       '{{registro.pH}}': values.registro.pH,
     };
 
-    const classPlaceholders: Record<string, string> = {
+    const stringsPlaceholders: Record<string, string> = {
+      '{{dataDeRegistro}}': values.registro.dataDeRegistro,
+      '{{usuario.id}}': values.usuario.id,
+      '{{planta.id}}': values.planta.id,
+      '{{especie.id}}': values.especie.id,
+      '{{especie.nome}}': values.especie.nome,
+      '{{registro.imagem}}': imageTemplateHTML,
+      '{{registro.diagnostico}}': values.registro.diagnostico ?? 'Este registro não teve um diagnóstico',
+      '{{registro.id}}': values.registro.id,
+      '{{usuario.nome}}': values.usuario.nome,
+      '{{planta.nome}}': values.planta.nome,
+      '{{planta.dataDePlantacao}}': values.planta.dataDePlantacao,
       '{{nitrogenioClass}}': nitrogenioClass,
       '{{fosforoClass}}': fosforoClass,
       '{{potassioClass}}': potassioClass,
@@ -162,11 +162,11 @@ export class GeneratePdfService {
       '{{pHClass}}': pHClass,
     };
 
-    let resultHtml = Object.entries(placeholders).reduce((acc, [key, value]) => {
+    let resultHtml = Object.entries(numbersPlaceholders).reduce((acc, [key, value]) => {
       return acc.replace(new RegExp(key, 'g'), formatarExibicao(value));
     }, template);
 
-    resultHtml = Object.entries(classPlaceholders).reduce((acc, [key, value]) => {
+    resultHtml = Object.entries(stringsPlaceholders).reduce((acc, [key, value]) => {
       return acc.replace(new RegExp(key, 'g'), value);
     }, resultHtml);
 
