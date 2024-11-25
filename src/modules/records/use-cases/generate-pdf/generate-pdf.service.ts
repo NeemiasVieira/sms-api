@@ -7,7 +7,7 @@ import { PrismaService } from '../../../../database/prisma/prisma.service';
 import { FormatarDatas } from '../../../../utils/FormatarDatas';
 import { SpecieMapper } from '../../../species/specie-mapper.service';
 import { UserType } from '../../../users/user.type';
-import { getInfoColor, valoresPDF } from './contract';
+import { formatarExibicao, getInfoColor, valoresPDF } from './contract';
 
 @Injectable()
 export class GeneratePdfService {
@@ -117,45 +117,59 @@ export class GeneratePdfService {
     const temperaturaClass = getInfoColor(values.registro.temperatura, values.especie.parametros.temperatura);
     const pHClass = getInfoColor(values.registro.pH, values.especie.parametros.pH);
 
-    return template
-      .replace('{{dataDeRegistro}}', values.registro.dataDeRegistro)
-      .replace('{{usuario.id}}', values.usuario.id)
-      .replace('{{planta.id}}', values.planta.id)
-      .replace('{{especie.id}}', values.especie.id)
-      .replace('{{especie.nome}}', values.especie.nome)
-      .replace('{{registro.imagem}}', imageTemplateHTML)
-      .replace('{{registro.diagnostico}}', values.registro.diagnostico ?? 'Este registro não teve um diagnóstico')
-      .replace('{{registro.id}}', values.registro.id)
-      .replace('{{usuario.nome}}', values.usuario.nome)
-      .replace('{{planta.nome}}', values.planta.nome)
-      .replace('{{planta.dataDePlantacao}}', values.planta.dataDePlantacao)
-      .replace('{{especie.parametros.nitrogenio.min}}', values.especie.parametros.nitrogenio.min)
-      .replace('{{especie.parametros.nitrogenio.max}}', values.especie.parametros.nitrogenio.max)
-      .replace('{{registro.nitrogenio}}', values.registro.nitrogenio)
-      .replace('{{especie.parametros.fosforo.min}}', values.especie.parametros.fosforo.min)
-      .replace('{{especie.parametros.fosforo.max}}', values.especie.parametros.fosforo.max)
-      .replace('{{registro.fosforo}}', values.registro.fosforo)
-      .replace('{{especie.parametros.potassio.min}}', values.especie.parametros.potassio.min)
-      .replace('{{especie.parametros.potassio.max}}', values.especie.parametros.potassio.max)
-      .replace('{{registro.potassio}}', values.registro.potassio)
-      .replace('{{especie.parametros.luz.min}}', values.especie.parametros.luz.min)
-      .replace('{{especie.parametros.luz.max}}', values.especie.parametros.luz.max)
-      .replace('{{registro.luz}}', values.registro.lux)
-      .replace('{{especie.parametros.umidade.min}}', values.especie.parametros.umidade.min)
-      .replace('{{especie.parametros.umidade.max}}', values.especie.parametros.umidade.max)
-      .replace('{{registro.umidade}}', values.registro.umidade)
-      .replace('{{especie.parametros.temperatura.min}}', values.especie.parametros.temperatura.min)
-      .replace('{{especie.parametros.temperatura.max}}', values.especie.parametros.temperatura.max)
-      .replace('{{registro.temperatura}}', values.registro.temperatura)
-      .replace('{{especie.parametros.pH.min}}', values.especie.parametros.pH.min)
-      .replace('{{especie.parametros.pH.max}}', values.especie.parametros.pH.max)
-      .replace('{{registro.pH}}', values.registro.pH)
-      .replace('{{nitrogenioClass}}', nitrogenioClass)
-      .replace('{{fosforoClass}}', fosforoClass)
-      .replace('{{potassioClass}}', potassioClass)
-      .replace('{{luzClass}}', luzClass)
-      .replace('{{umidadeClass}}', umidadeClass)
-      .replace('{{temperaturaClass}}', temperaturaClass)
-      .replace('{{pHClass}}', pHClass);
+    const placeholders: Record<string, string> = {
+      '{{dataDeRegistro}}': values.registro.dataDeRegistro,
+      '{{usuario.id}}': values.usuario.id,
+      '{{planta.id}}': values.planta.id,
+      '{{especie.id}}': values.especie.id,
+      '{{especie.nome}}': values.especie.nome,
+      '{{registro.imagem}}': imageTemplateHTML,
+      '{{registro.diagnostico}}': values.registro.diagnostico ?? 'Este registro não teve um diagnóstico',
+      '{{registro.id}}': values.registro.id,
+      '{{usuario.nome}}': values.usuario.nome,
+      '{{planta.nome}}': values.planta.nome,
+      '{{planta.dataDePlantacao}}': values.planta.dataDePlantacao,
+      '{{especie.parametros.nitrogenio.min}}': values.especie.parametros.nitrogenio.min,
+      '{{especie.parametros.nitrogenio.max}}': values.especie.parametros.nitrogenio.max,
+      '{{registro.nitrogenio}}': values.registro.nitrogenio,
+      '{{especie.parametros.fosforo.min}}': values.especie.parametros.fosforo.min,
+      '{{especie.parametros.fosforo.max}}': values.especie.parametros.fosforo.max,
+      '{{registro.fosforo}}': values.registro.fosforo,
+      '{{especie.parametros.potassio.min}}': values.especie.parametros.potassio.min,
+      '{{especie.parametros.potassio.max}}': values.especie.parametros.potassio.max,
+      '{{registro.potassio}}': values.registro.potassio,
+      '{{especie.parametros.luz.min}}': values.especie.parametros.luz.min,
+      '{{especie.parametros.luz.max}}': values.especie.parametros.luz.max,
+      '{{registro.luz}}': values.registro.lux,
+      '{{especie.parametros.umidade.min}}': values.especie.parametros.umidade.min,
+      '{{especie.parametros.umidade.max}}': values.especie.parametros.umidade.max,
+      '{{registro.umidade}}': values.registro.umidade,
+      '{{especie.parametros.temperatura.min}}': values.especie.parametros.temperatura.min,
+      '{{especie.parametros.temperatura.max}}': values.especie.parametros.temperatura.max,
+      '{{registro.temperatura}}': values.registro.temperatura,
+      '{{especie.parametros.pH.min}}': values.especie.parametros.pH.min,
+      '{{especie.parametros.pH.max}}': values.especie.parametros.pH.max,
+      '{{registro.pH}}': values.registro.pH,
+    };
+
+    const classPlaceholders: Record<string, string> = {
+      '{{nitrogenioClass}}': nitrogenioClass,
+      '{{fosforoClass}}': fosforoClass,
+      '{{potassioClass}}': potassioClass,
+      '{{luzClass}}': luzClass,
+      '{{umidadeClass}}': umidadeClass,
+      '{{temperaturaClass}}': temperaturaClass,
+      '{{pHClass}}': pHClass,
+    };
+
+    let resultHtml = Object.entries(placeholders).reduce((acc, [key, value]) => {
+      return acc.replace(new RegExp(key, 'g'), formatarExibicao(value));
+    }, template);
+
+    resultHtml = Object.entries(classPlaceholders).reduce((acc, [key, value]) => {
+      return acc.replace(new RegExp(key, 'g'), value);
+    }, resultHtml);
+
+    return resultHtml;
   }
 }
