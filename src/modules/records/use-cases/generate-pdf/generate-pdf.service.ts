@@ -7,7 +7,7 @@ import { PrismaService } from '../../../../database/prisma/prisma.service';
 import { FormatarDatas } from '../../../../utils/FormatarDatas';
 import { SpecieMapper } from '../../../species/specie-mapper.service';
 import { UserType } from '../../../users/user.type';
-import { valoresPDF } from './contract';
+import { getInfoColor, valoresPDF } from './contract';
 
 @Injectable()
 export class GeneratePdfService {
@@ -109,6 +109,14 @@ export class GeneratePdfService {
           class="plantImage"
          />`;
 
+    const nitrogenioClass = getInfoColor(values.registro.nitrogenio, values.especie.parametros.nitrogenio);
+    const fosforoClass = getInfoColor(values.registro.fosforo, values.especie.parametros.fosforo);
+    const potassioClass = getInfoColor(values.registro.potassio, values.especie.parametros.potassio);
+    const luzClass = getInfoColor(values.registro.lux, values.especie.parametros.luz);
+    const umidadeClass = getInfoColor(values.registro.umidade, values.especie.parametros.umidade);
+    const temperaturaClass = getInfoColor(values.registro.temperatura, values.especie.parametros.temperatura);
+    const pHClass = getInfoColor(values.registro.pH, values.especie.parametros.pH);
+
     return template
       .replace('{{dataDeRegistro}}', values.registro.dataDeRegistro)
       .replace('{{usuario.id}}', values.usuario.id)
@@ -132,7 +140,7 @@ export class GeneratePdfService {
       .replace('{{registro.potassio}}', values.registro.potassio)
       .replace('{{especie.parametros.luz.min}}', values.especie.parametros.luz.min)
       .replace('{{especie.parametros.luz.max}}', values.especie.parametros.luz.max)
-      .replace('{{registro.luz}}', values.registro.luz)
+      .replace('{{registro.luz}}', values.registro.lux)
       .replace('{{especie.parametros.umidade.min}}', values.especie.parametros.umidade.min)
       .replace('{{especie.parametros.umidade.max}}', values.especie.parametros.umidade.max)
       .replace('{{registro.umidade}}', values.registro.umidade)
@@ -141,6 +149,13 @@ export class GeneratePdfService {
       .replace('{{registro.temperatura}}', values.registro.temperatura)
       .replace('{{especie.parametros.pH.min}}', values.especie.parametros.pH.min)
       .replace('{{especie.parametros.pH.max}}', values.especie.parametros.pH.max)
-      .replace('{{registro.pH}}', values.registro.pH);
+      .replace('{{registro.pH}}', values.registro.pH)
+      .replace('{{nitrogenioClass}}', nitrogenioClass)
+      .replace('{{fosforoClass}}', fosforoClass)
+      .replace('{{potassioClass}}', potassioClass)
+      .replace('{{luzClass}}', luzClass)
+      .replace('{{umidadeClass}}', umidadeClass)
+      .replace('{{temperaturaClass}}', temperaturaClass)
+      .replace('{{pHClass}}', pHClass);
   }
 }

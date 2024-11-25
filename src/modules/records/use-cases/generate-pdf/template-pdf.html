@@ -63,6 +63,17 @@
         -moz-box-shadow: 2px -1px 25px -6px rgba(0, 0, 0, 0.75);
         box-shadow: 2px -1px 25px -6px rgba(0, 0, 0, 0.75);
       }
+      .Saudavel {
+        background-color: #8cdf27;
+      }
+
+      .Excesso {
+        background-color: #ffd520;
+      }
+
+      .Deficiencia {
+        background-color: #f44;
+      }
     </style>
   </head>
   <body>
@@ -83,51 +94,59 @@
       <table class="table">
         <tr>
           <th>Parâmetro</th>
+          <th>Unidade</th>
           <th>Espécie (Min)</th>
           <th>Espécie (Max)</th>
           <th>Registro</th>
         </tr>
         <tr>
           <td>Nitrogênio</td>
+          <td>mg/kg</td>
           <td>{{especie.parametros.nitrogenio.min}}</td>
           <td>{{especie.parametros.nitrogenio.max}}</td>
-          <td class="comparison">{{registro.nitrogenio}}</td>
+          <td class="comparison {{nitrogenioClass}} Saudavel">{{registro.nitrogenio}}</td>
         </tr>
         <tr>
           <td>Fósforo</td>
+          <td>mg/kg</td>
           <td>{{especie.parametros.fosforo.min}}</td>
           <td>{{especie.parametros.fosforo.max}}</td>
-          <td class="comparison">{{registro.fosforo}}</td>
+          <td class="comparison {{fosforoClass}} Excesso">{{registro.fosforo}}</td>
         </tr>
         <tr>
           <td>Potássio</td>
+          <td>mg/kg</td>
           <td>{{especie.parametros.potassio.min}}</td>
           <td>{{especie.parametros.potassio.max}}</td>
-          <td class="comparison">{{registro.potassio}}</td>
+          <td class="comparison {{potassioClass}} Deficiencia">{{registro.potassio}}</td>
         </tr>
         <tr>
           <td>Luz</td>
+          <td>lux</td>
           <td>{{especie.parametros.luz.min}}</td>
           <td>{{especie.parametros.luz.max}}</td>
-          <td class="comparison">{{registro.luz}}</td>
+          <td class="comparison {{luzClass}}">{{registro.luz}}</td>
         </tr>
         <tr>
           <td>Umidade</td>
+          <td>%</td>
           <td>{{especie.parametros.umidade.min}}</td>
           <td>{{especie.parametros.umidade.max}}</td>
-          <td class="comparison">{{registro.umidade}}</td>
+          <td class="comparison {{umidadeClass}}">{{registro.umidade}}</td>
         </tr>
         <tr>
           <td>Temperatura</td>
+          <td>°C</td>
           <td>{{especie.parametros.temperatura.min}}</td>
           <td>{{especie.parametros.temperatura.max}}</td>
-          <td class="comparison">{{registro.temperatura}}</td>
+          <td class="comparison {{temperaturaClass}}">{{registro.temperatura}}</td>
         </tr>
         <tr>
           <td>pH</td>
+          <td></td>
           <td>{{especie.parametros.pH.min}}</td>
           <td>{{especie.parametros.pH.max}}</td>
-          <td class="comparison">{{registro.pH}}</td>
+          <td class="comparison {{pHClass}}">{{registro.pH}}</td>
         </tr>
       </table>
       <h3>Identificadores</h3>
